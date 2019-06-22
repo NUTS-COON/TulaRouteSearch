@@ -1,29 +1,50 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
+using TulaRouteSearcherAPI.Models;
+using TulaRouteSearcherAPI.ViewModels;
 
 namespace TulaRouteSearcherAPI.Controllers
 {
     [Route("api/[controller]")]
     [Produces("application/json")]
-    public class TestController : Controller
+    public class RouteSearcherController : Controller
     {
-        public TestController()
+        public RouteSearcherController()
         {
 
         }
 
-        /// <summary>
-        /// TEST method
-        /// </summary>
+        /// <summary> Метод получения предложений по адресу </summary>
         /// <returns></returns>
-        [HttpGet(nameof(GetTestData))]
-        public async Task<IActionResult> GetTestData()
+        [HttpPost(nameof(GetSuggestions))]
+        public async Task<IActionResult> GetSuggestions([FromBody]AddressTextVM text)
         {
-            return await Task.FromResult(Ok(new { TestData = "Hello" }));
+            var result = new List<AddressInfo>
+            {
+                new AddressInfo
+                {
+                    Location = new Location
+                    {
+                        Latitude = 54.166637,
+                        Longintude = 37.587081
+                    },
+                    Address = "просп. Ленина, 92",
+                    Town = "Тула"
+                },
+                new AddressInfo
+                {
+                    Location = new Location
+                    {
+                        Latitude = 54.166637,
+                        Longintude = 37.587081
+                    },
+                    Address = "просп. Ленина, 93",
+                    Town = "Тула"
+                },
+            };
+
+            return await Task.FromResult(Ok(result));
         }
 
 

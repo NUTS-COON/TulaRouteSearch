@@ -4,10 +4,8 @@
         <name>TulaRouteSearcherAPI</name>
     </assembly>
     <members>
-        <member name="M:TulaRouteSearcherAPI.Controllers.TestController.GetTestData">
-            <summary>
-            TEST method
-            </summary>
+        <member name="M:TulaRouteSearcherAPI.Controllers.RouteSearcherController.GetSuggestions(TulaRouteSearcherAPI.ViewModels.AddressTextVM)">
+            <summary> Метод получения предложений по адресу </summary>
             <returns></returns>
         </member>
     </members>

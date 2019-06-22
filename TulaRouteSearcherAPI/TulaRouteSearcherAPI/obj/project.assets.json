@@ -12009,11 +12009,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Hack\\TulaRouteSearcher\\TulaRouteSearch\\TulaRouteSearcherAPI\\TulaRouteSearcherAPI\\TulaRouteSearcherAPI.csproj",
+      "projectUniqueName": "C:\\DigitalHack\\TulaRouteSearcherAPI\\TulaRouteSearcherAPI\\TulaRouteSearcherAPI.csproj",
       "projectName": "TulaRouteSearcherAPI",
-      "projectPath": "C:\\Hack\\TulaRouteSearcher\\TulaRouteSearch\\TulaRouteSearcherAPI\\TulaRouteSearcherAPI\\TulaRouteSearcherAPI.csproj",
+      "projectPath": "C:\\DigitalHack\\TulaRouteSearcherAPI\\TulaRouteSearcherAPI\\TulaRouteSearcherAPI.csproj",
       "packagesPath": "C:\\Users\\1\\.nuget\\packages\\",
-      "outputPath": "C:\\Hack\\TulaRouteSearcher\\TulaRouteSearch\\TulaRouteSearcherAPI\\TulaRouteSearcherAPI\\obj\\",
+      "outputPath": "C:\\DigitalHack\\TulaRouteSearcherAPI\\TulaRouteSearcherAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
