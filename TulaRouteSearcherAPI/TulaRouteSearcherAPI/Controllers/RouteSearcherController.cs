@@ -226,7 +226,7 @@ namespace TulaRouteSearcherAPI.Controllers
             return await Task.FromResult(Ok(result));
         }
 
-
+        [HttpPost(nameof(GetHereSuggestions))]
         public async Task<IActionResult> GetHereSuggestions([FromBody]AddressTextVM text)
         {
             var result = await _hereService.GetSuggestions(text.Text);
