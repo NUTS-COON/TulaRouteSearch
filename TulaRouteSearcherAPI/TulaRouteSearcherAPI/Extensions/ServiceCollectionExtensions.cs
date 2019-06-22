@@ -3,6 +3,8 @@ using Microsoft.Extensions.PlatformAbstractions;
 using Swashbuckle.AspNetCore.Examples;
 using Swashbuckle.AspNetCore.Swagger;
 using System.IO;
+using TulaRouteSearcherAPI.Services;
+using TulaRouteSearcherAPI.Stores;
 
 namespace TulaRouteSearcherAPI.Extensions
 {
@@ -10,12 +12,14 @@ namespace TulaRouteSearcherAPI.Extensions
     {
         public static IServiceCollection AddStores(this IServiceCollection services, string connectionString)
         {
+            services.AddTransient<IRouteSearcherStore>(provider => new RouteSearcherStore(connectionString));
 
             return services;
         }
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
+            services.AddTransient<IHereService, HereService>();
 
             return services;
         }
