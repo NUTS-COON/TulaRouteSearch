@@ -30,6 +30,9 @@ namespace TulaRouteSearcherAPI.Controllers
         [HttpPost(nameof(GetSuggestions))]
         public async Task<IActionResult> GetSuggestions([FromBody]AddressTextVM text)
         {
+            if (string.IsNullOrEmpty(text?.Text))
+                return Ok();
+
             var result = new List<AddressInfo>
             {
                 new AddressInfo
@@ -40,7 +43,7 @@ namespace TulaRouteSearcherAPI.Controllers
                         Longitude = 37.587081
                     },
                     Address = "просп. Ленина, 92",
-                    Town = "Тула"
+                    HereLocationId = "NT_5mGkj3z90Fbj4abzMbUE4C_xA"
                 },
                 new AddressInfo
                 {
@@ -50,7 +53,7 @@ namespace TulaRouteSearcherAPI.Controllers
                         Longitude = 37.587081
                     },
                     Address = "просп. Ленина, 93",
-                    Town = "Тула"
+                    HereLocationId = "NT_5mGkj3z90Fbj4abzMbUE4C_xA"
                 },
             };
 
@@ -75,7 +78,20 @@ namespace TulaRouteSearcherAPI.Controllers
         [HttpPost(nameof(GetHereSuggestions))]
         public async Task<IActionResult> GetHereSuggestions([FromBody]AddressTextVM text)
         {
+            if (string.IsNullOrEmpty(text?.Text))
+                return Ok();
+
             var result = await _hereService.GetSuggestions(text.Text);
+            return Ok(result);
+        }
+
+        [HttpPost(nameof(GetCoordinateByHereLocation))]
+        public async Task<IActionResult> GetCoordinateByHereLocation([FromBody]HereLocationVM location)
+        {
+            if (string.IsNullOrEmpty(location?.LocationId))
+                return Ok();
+
+            var result = await _hereService.GetLocation(location.LocationId);
             return Ok(result);
         }
 
