@@ -12,7 +12,7 @@ namespace TulaRouteSearcherAPI.Extensions
     {
         public static IServiceCollection AddStores(this IServiceCollection services, string connectionString)
         {
-            services.AddTransient<DbRepository>(provider => new DbRepository(connectionString));
+            services.AddTransient(provider => new DbRepository(connectionString));
 
             return services;
         }
@@ -21,6 +21,7 @@ namespace TulaRouteSearcherAPI.Extensions
         {
             services.AddTransient<IHereService, HereService>();
             services.AddTransient<IRouteSearcher, RouteSearcher>();
+            services.AddTransient<ISuggestionSearcher, SuggestionSearcher>();
 
             return services;
         }

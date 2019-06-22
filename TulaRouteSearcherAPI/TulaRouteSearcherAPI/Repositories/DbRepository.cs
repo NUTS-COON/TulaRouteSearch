@@ -1,8 +1,10 @@
 ﻿using Dapper;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 using TulaRouteSearcherAPI.Entities;
 
 namespace TulaRouteSearcherAPI.Repositories
@@ -42,6 +44,16 @@ namespace TulaRouteSearcherAPI.Repositories
             using (var conn = CreateConnection())
             {
                 return conn.Query<RouteItem>("SELECT * FROM RouteItems WHERE Id = @routeId", new { routeId }).ToArray();
+            }
+        }
+
+        public async Task<IEnumerable<Town>> GetTowns(string[] textFilters)
+        {
+            var filter = string.Join(" and ", textFilters.Select(text => $"FullName Like N'%{text}%'"));
+
+            using (var conn = CreateConnection())
+            {
+                return await conn.QueryAsync<Town>($"SELECT * FROM Town WHERE {filter}");
             }
         }
 
