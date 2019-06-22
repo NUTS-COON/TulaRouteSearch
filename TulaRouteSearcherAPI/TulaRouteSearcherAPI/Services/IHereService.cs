@@ -6,6 +6,6 @@ namespace TulaRouteSearcherAPI.Services
 {
     public interface IHereService
     {
-        Task<IEnumerable<HereSuggestion>> GetSuggestions(string text);
+        Task<HereSuggestions> GetSuggestions(string text);
     }
 }
