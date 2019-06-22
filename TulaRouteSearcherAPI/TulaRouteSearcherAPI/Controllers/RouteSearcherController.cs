@@ -229,7 +229,20 @@ namespace TulaRouteSearcherAPI.Controllers
         [HttpPost(nameof(GetHereSuggestions))]
         public async Task<IActionResult> GetHereSuggestions([FromBody]AddressTextVM text)
         {
+            if (string.IsNullOrEmpty(text?.Text))
+                return Ok();
+
             var result = await _hereService.GetSuggestions(text.Text);
+            return Ok(result);
+        }
+
+        [HttpPost(nameof(GetCoordinateByHereLocation))]
+        public async Task<IActionResult> GetCoordinateByHereLocation([FromBody]HereLocationVM location)
+        {
+            if (string.IsNullOrEmpty(location?.LocationId))
+                return Ok();
+
+            var result = await _hereService.GetLocation(location.LocationId);
             return Ok(result);
         }
 

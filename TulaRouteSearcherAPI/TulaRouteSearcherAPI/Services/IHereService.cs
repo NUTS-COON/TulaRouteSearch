@@ -7,5 +7,6 @@ namespace TulaRouteSearcherAPI.Services
     {
         Task<HereSuggestions> GetSuggestions(string text);
         Task<HereRouteResponse> GetRoutes(Coordinate from, Coordinate to);
+        Task<Coordinate> GetLocation(string locationId);
     }
 }
