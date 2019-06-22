@@ -240,3 +240,10 @@ _Pvt_Extensions
 # Paket dependency manager
 .paket/paket.exe
 paket-files/
+
+
+/AvtovokzalParser/nbproject/private/
+/AvtovokzalParser/target/
+/Parser/target/
+Parser/*.json
+
