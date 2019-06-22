@@ -20,6 +20,7 @@ namespace TulaRouteSearcherAPI.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddTransient<IHereService, HereService>();
+            services.AddTransient<IRouteSearcher, RouteSearcher>();
 
             return services;
         }
