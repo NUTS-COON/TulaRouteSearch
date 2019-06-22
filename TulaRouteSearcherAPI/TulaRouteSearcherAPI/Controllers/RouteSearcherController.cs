@@ -53,7 +53,9 @@ namespace TulaRouteSearcherAPI.Controllers
             return await Task.FromResult(Ok(result));
         }
 
-
+        /// <summary> Метод поиска маршрутов  </summary>
+        /// <param name="targetRouteVM"></param>
+        /// <returns></returns>
         [HttpPost(nameof(GetRoutes))]
         public async Task<IActionResult> GetRoutes([FromBody]TargetRouteVM targetRouteVM)
         {
@@ -225,6 +227,11 @@ namespace TulaRouteSearcherAPI.Controllers
         }
 
 
+        public async Task<IActionResult> GetHereSuggestions([FromBody]AddressTextVM text)
+        {
+            var result = await _hereService.GetSuggestions(text.Text);
+            return Ok(result);
+        }
 
     }
 }

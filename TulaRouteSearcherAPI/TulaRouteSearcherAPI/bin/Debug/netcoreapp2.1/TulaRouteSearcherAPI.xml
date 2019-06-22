@@ -8,5 +8,10 @@
             <summary> Метод получения предложений по адресу </summary>
             <returns></returns>
         </member>
+        <member name="M:TulaRouteSearcherAPI.Controllers.RouteSearcherController.GetRoutes(TulaRouteSearcherAPI.ViewModels.TargetRouteVM)">
+            <summary> Метод поиска маршрутов  </summary>
+            <param name="targetRouteVM"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>
