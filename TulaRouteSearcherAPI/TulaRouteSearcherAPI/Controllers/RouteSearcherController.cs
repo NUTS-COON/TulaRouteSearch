@@ -38,7 +38,7 @@ namespace TulaRouteSearcherAPI.Controllers
             if (hereSuggestions == null)
                 return Ok();
 
-            var result = hereSuggestions.Suggestions.Select(suggestion => new AddressInfo
+            var result = hereSuggestions.Suggestions.Select(suggestion => new SuggesionAddress
             {
                 Address = suggestion.Label,
                 HereLocationId = suggestion.LocationId
