@@ -4,6 +4,6 @@
     {
         public string Town { get; set; }
         public string Address { get; set; }
-        public Location Location { get; set; }
+        public Coordinate Coordinate { get; set; }
     }
 }
