@@ -1,0 +1,16 @@
+C:\Hack\TulaRouteSearcher\TulaRouteSearch\TulaRouteSearcherAPI\TulaRouteSearcherAPI\bin\Release\netcoreapp2.1\win-x64\TulaRouteSearcherAPI.exe
+C:\Hack\TulaRouteSearcher\TulaRouteSearch\TulaRouteSearcherAPI\TulaRouteSearcherAPI\bin\Release\netcoreapp2.1\win-x64\TulaRouteSearcherAPI.deps.json
+C:\Hack\TulaRouteSearcher\TulaRouteSearch\TulaRouteSearcherAPI\TulaRouteSearcherAPI\bin\Release\netcoreapp2.1\win-x64\TulaRouteSearcherAPI.runtimeconfig.json
+C:\Hack\TulaRouteSearcher\TulaRouteSearch\TulaRouteSearcherAPI\TulaRouteSearcherAPI\bin\Release\netcoreapp2.1\win-x64\TulaRouteSearcherAPI.runtimeconfig.dev.json
+C:\Hack\TulaRouteSearcher\TulaRouteSearch\TulaRouteSearcherAPI\TulaRouteSearcherAPI\bin\Release\netcoreapp2.1\win-x64\TulaRouteSearcherAPI.dll
+C:\Hack\TulaRouteSearcher\TulaRouteSearch\TulaRouteSearcherAPI\TulaRouteSearcherAPI\bin\Release\netcoreapp2.1\win-x64\TulaRouteSearcherAPI.pdb
+C:\Hack\TulaRouteSearcher\TulaRouteSearch\TulaRouteSearcherAPI\TulaRouteSearcherAPI\obj\Release\netcoreapp2.1\win-x64\TulaRouteSearcherAPI.csprojAssemblyReference.cache
+C:\Hack\TulaRouteSearcher\TulaRouteSearch\TulaRouteSearcherAPI\TulaRouteSearcherAPI\obj\Release\netcoreapp2.1\win-x64\TulaRouteSearcherAPI.csproj.CoreCompileInputs.cache
+C:\Hack\TulaRouteSearcher\TulaRouteSearch\TulaRouteSearcherAPI\TulaRouteSearcherAPI\obj\Release\netcoreapp2.1\win-x64\TulaRouteSearcherAPI.RazorAssemblyInfo.cache
+C:\Hack\TulaRouteSearcher\TulaRouteSearch\TulaRouteSearcherAPI\TulaRouteSearcherAPI\obj\Release\netcoreapp2.1\win-x64\TulaRouteSearcherAPI.RazorAssemblyInfo.cs
+C:\Hack\TulaRouteSearcher\TulaRouteSearch\TulaRouteSearcherAPI\TulaRouteSearcherAPI\obj\Release\netcoreapp2.1\win-x64\UserSecretsAssemblyInfo.cs
+C:\Hack\TulaRouteSearcher\TulaRouteSearch\TulaRouteSearcherAPI\TulaRouteSearcherAPI\obj\Release\netcoreapp2.1\win-x64\TulaRouteSearcherAPI.AssemblyInfoInputs.cache
+C:\Hack\TulaRouteSearcher\TulaRouteSearch\TulaRouteSearcherAPI\TulaRouteSearcherAPI\obj\Release\netcoreapp2.1\win-x64\TulaRouteSearcherAPI.AssemblyInfo.cs
+C:\Hack\TulaRouteSearcher\TulaRouteSearch\TulaRouteSearcherAPI\TulaRouteSearcherAPI\obj\Release\netcoreapp2.1\win-x64\TulaRouteSearcherAPI.RazorTargetAssemblyInfo.cache
+C:\Hack\TulaRouteSearcher\TulaRouteSearch\TulaRouteSearcherAPI\TulaRouteSearcherAPI\obj\Release\netcoreapp2.1\win-x64\TulaRouteSearcherAPI.dll
+C:\Hack\TulaRouteSearcher\TulaRouteSearch\TulaRouteSearcherAPI\TulaRouteSearcherAPI\obj\Release\netcoreapp2.1\win-x64\TulaRouteSearcherAPI.pdb
