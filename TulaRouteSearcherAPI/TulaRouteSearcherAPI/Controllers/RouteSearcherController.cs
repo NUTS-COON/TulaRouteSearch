@@ -26,6 +26,9 @@ namespace TulaRouteSearcherAPI.Controllers
         [HttpPost(nameof(GetSuggestions))]
         public async Task<IActionResult> GetSuggestions([FromBody]AddressTextVM text)
         {
+            if (string.IsNullOrEmpty(text?.Text))
+                return Ok();
+
             var result = new List<AddressInfo>
             {
                 new AddressInfo
@@ -36,7 +39,7 @@ namespace TulaRouteSearcherAPI.Controllers
                         Longitude = 37.587081
                     },
                     Address = "просп. Ленина, 92",
-                    Town = "Тула"
+                    HereLocationId = "NT_5mGkj3z90Fbj4abzMbUE4C_xA"
                 },
                 new AddressInfo
                 {
@@ -46,7 +49,7 @@ namespace TulaRouteSearcherAPI.Controllers
                         Longitude = 37.587081
                     },
                     Address = "просп. Ленина, 93",
-                    Town = "Тула"
+                    HereLocationId = "NT_5mGkj3z90Fbj4abzMbUE4C_xA"
                 },
             };
 
