@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TulaRouteSearcherAPI.Models;
 using TulaRouteSearcherAPI.Services;
-using TulaRouteSearcherAPI.Stores;
 using TulaRouteSearcherAPI.ViewModels;
 
 namespace TulaRouteSearcherAPI.Controllers
@@ -16,14 +14,11 @@ namespace TulaRouteSearcherAPI.Controllers
     {
         private readonly IHereService _hereService;
         private readonly IRouteSearcher _routeSearcher;
-        private readonly IRouteSearcherStore _routeSearcherStore;
 
-        public RouteSearcherController(IHereService hereService, IRouteSearcher routeSearcher,
-            IRouteSearcherStore routeSearcherStore)
+        public RouteSearcherController(IHereService hereService, IRouteSearcher routeSearcher)
         {
             _hereService = hereService;
             _routeSearcher = routeSearcher;
-            _routeSearcherStore = routeSearcherStore;
         }
 
         /// <summary> Метод получения предложений по адресу </summary>

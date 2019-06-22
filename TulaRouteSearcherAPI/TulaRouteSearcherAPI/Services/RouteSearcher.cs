@@ -2,17 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TulaRouteSearcherAPI.Entities;
 using TulaRouteSearcherAPI.Models;
+using TulaRouteSearcherAPI.Repositories;
 
 namespace TulaRouteSearcherAPI.Services
 {
     public class RouteSearcher : IRouteSearcher
     {
-        private readonly IHereService _hereService;
+        private static Stop[] _allStops;
 
-        public RouteSearcher(IHereService hereService)
+        private readonly IHereService _hereService;
+        private readonly DbRepository _dbRepository;
+
+        public RouteSearcher(IHereService hereService, DbRepository dbRepository)
         {
             _hereService = hereService;
+            _dbRepository = dbRepository;
         }
 
         public async Task<List<TargetRoute>> GetRoutes(DateTime time, Coordinate from, Coordinate to)
@@ -22,8 +28,9 @@ namespace TulaRouteSearcherAPI.Services
             if (routes?.Any() ?? false)
                 return routes;
 
-            var manualRoutes = await GetManualRoutes(time, from, to);
-            foreach(var r in manualRoutes)
+            var manualRoutes = GetManualRoutes(time, from, to);
+            routes = new List<TargetRoute>();
+            foreach (var r in manualRoutes)
             { 
                 var startPoint = r.Routes.FirstOrDefault().Points.FirstOrDefault().Coordinate;
                 var endPoint = r.Routes.LastOrDefault().Points.LastOrDefault().Coordinate;
@@ -40,9 +47,61 @@ namespace TulaRouteSearcherAPI.Services
             return routes;
         }
 
-        private async Task<List<TargetRoute>> GetManualRoutes(DateTime time, Coordinate from, Coordinate to)
+        private List<TargetRoute> GetManualRoutes(DateTime time, Coordinate from, Coordinate to)
         {
-            throw new System.NotImplementedException();
+            var fromStops = GetNearestStops(from);
+            var toStops = GetNearestStops(to);
+
+            List<SearchedRoute> res = new List<SearchedRoute>();
+            foreach(var fromStop in fromStops)
+            {
+                foreach (var toStop in toStops)
+                {
+                    res.AddRange(_dbRepository.SearchRoutes(time, fromStop, toStop));
+                }
+            }
+
+            if (!res.Any())
+                return null;
+
+            var minTravelTime = res.Select(t => t.TravelTime).Min();
+
+            return res
+                .Where(t => t.TravelTime < 1.5 * minTravelTime)
+                .OrderBy(t => t.TravelTime)
+                .Take(3)
+                .Select(t => GetRouteFromDb(t))
+                .ToList();
+        }
+
+        private TargetRoute GetRouteFromDb(SearchedRoute sr)
+        {
+            return new TargetRoute
+            {
+                Routes = new List<TransportRoute>(),
+                TravelTime = sr.TravelTime
+            };
+        }
+
+        private Stop[] GetNearestStops(Coordinate point)
+        {
+            if(_allStops == null)
+            {
+                _allStops = _dbRepository.GetAllStops();
+            }
+
+            return _allStops
+                .Select(s => new { s, d = GetDist(s, point) })
+                .Where(x => x.d < 20000)
+                .OrderBy(x => x.d)
+                .Take(3)
+                .Select(x => x.s)
+                .ToArray();
+        }
+
+        private static double GetDist(Coordinate p1, Coordinate p2)
+        {
+            return Math.Sqrt(Math.Pow(111135 * (p1.Longitude - p2.Longitude), 2) + Math.Pow(55134 * (p1.Latitude - p1.Latitude), 2));
         }
 
         private async Task<List<TargetRoute>> GetAutoRoutes(DateTime time, Coordinate from, Coordinate to)
@@ -89,7 +148,11 @@ namespace TulaRouteSearcherAPI.Services
                     }
                     routes.Add(route);
 
-                    return new TargetRoute { Routes = routes };
+                    return new TargetRoute
+                    {
+                        Routes = routes,
+                        TravelTime = r.Leg.FirstOrDefault().TravelTime
+                    };
                 })
                 .ToList();
         }
