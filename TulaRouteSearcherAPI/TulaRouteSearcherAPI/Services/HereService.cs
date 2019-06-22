@@ -44,7 +44,7 @@ namespace TulaRouteSearcherAPI.Services
             return await Execute<HereSuggestions>(url);
         }
 
-        public async Task<HereRouteResponse> GetRoutes(DateTime time, Coordinate from, Coordinate to)
+        public async Task<HereRouteResponse> GetRoutes(DateTime time, Coordinate from, Coordinate to, string mode = "publicTransport")
         {
             var nfi = new NumberFormatInfo
             {
@@ -56,7 +56,7 @@ namespace TulaRouteSearcherAPI.Services
                 .Append($"?app_id={appId}")
                 .Append($"&app_code={appCode}")
                 .Append($"&language=ru-ru")
-                .Append($"&mode=fastest;publicTransport")
+                .Append($"&mode=fastest;{mode}")
                 .Append($"&maneuverattributes=po,ti,pt,ac,di,fj,ix")
                 .Append($"&routeattributes=sh,gr")
                 .Append($"&waypoint0=geo!stopOver!{from.Latitude.ToString(nfi)},{from.Longitude.ToString(nfi)}")

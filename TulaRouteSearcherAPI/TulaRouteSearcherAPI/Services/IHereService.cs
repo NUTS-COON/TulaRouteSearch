@@ -7,7 +7,7 @@ namespace TulaRouteSearcherAPI.Services
     public interface IHereService
     {
         Task<HereSuggestions> GetSuggestions(string text);
-        Task<HereRouteResponse> GetRoutes(DateTime time, Coordinate from, Coordinate to);
+        Task<HereRouteResponse> GetRoutes(DateTime time, Coordinate from, Coordinate to, string mode = "publicTransport");
         Task<Coordinate> GetLocation(string locationId);
     }
 }

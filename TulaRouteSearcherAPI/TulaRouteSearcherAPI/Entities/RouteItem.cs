@@ -1,8 +1,12 @@
-﻿namespace TulaRouteSearcherAPI.Entities
+﻿using System;
+using TulaRouteSearcherAPI.Models;
+
+namespace TulaRouteSearcherAPI.Entities
 {
-    public class RouteItem
+    public class RouteItem : Coordinate
     {
-        public int Id { get; set; }
+        public TimeSpan ToTime { get; set; }
         public string Name { get; set; }
+        public int StopId { get; set; }
     }
 }

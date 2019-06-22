@@ -73,8 +73,8 @@ namespace TulaRouteSearcherAPI.Controllers
         public async Task<IActionResult> GetRoutes([FromBody]TargetRouteVM targetRouteVM)
         {
             var time = targetRouteVM.Time ?? DateTime.Now;
-            var from = targetRouteVM.From.Coordinate;
-            var to = targetRouteVM.To.Coordinate;
+            var from = targetRouteVM.From.Coordinate ?? await _hereService.GetLocation(targetRouteVM.From.HereLocationId);
+            var to = targetRouteVM.To.Coordinate ?? await _hereService.GetLocation(targetRouteVM.To.HereLocationId);
 
             var result = await _routeSearcher.GetRoutes(time, from, to);
 
