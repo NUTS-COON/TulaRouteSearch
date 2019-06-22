@@ -27,7 +27,7 @@ namespace TulaRouteSearcherAPI.Controllers
                     Location = new Location
                     {
                         Latitude = 54.166637,
-                        Longintude = 37.587081
+                        Longitude = 37.587081
                     },
                     Address = "просп. Ленина, 92",
                     Town = "Тула"
@@ -37,7 +37,7 @@ namespace TulaRouteSearcherAPI.Controllers
                     Location = new Location
                     {
                         Latitude = 54.166637,
-                        Longintude = 37.587081
+                        Longitude = 37.587081
                     },
                     Address = "просп. Ленина, 93",
                     Town = "Тула"
