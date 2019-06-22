@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Globalization;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,17 +29,24 @@ namespace TulaRouteSearcherAPI.Services
             return await Execute<HereSuggestions>(url);
         }
 
-        public async Task<HereRouteResponse> GetRoutes(Coordinate from, Coordinate to)
+        public async Task<HereRouteResponse> GetRoutes(DateTime time, Coordinate from, Coordinate to)
         {
+            var nfi = new NumberFormatInfo
+            {
+                NumberDecimalSeparator = "."
+            };
+
             var url = new StringBuilder()
                 .Append("https://route.api.here.com/routing/7.2/calculateroute.json")
                 .Append($"?app_id={appId}")
                 .Append($"&app_code={appCode}")
                 .Append($"&language=ru-ru")
                 .Append($"&mode=fastest;publicTransport")
-                .Append($"&routeattributes=sh,gr>")
-                .Append($"&waypoint0=geo!stopOver!{from.Longitude},{from.Latitude}")
-                .Append($"&waypoint1=geo!stopOver!{to.Longitude},{to.Latitude}")
+                .Append($"&maneuverattributes=po,ti,pt,ac,di,fj,ix")
+                .Append($"&routeattributes=sh,gr")
+                .Append($"&waypoint0=geo!stopOver!{from.Latitude.ToString(nfi)},{from.Longitude.ToString(nfi)}")
+                .Append($"&waypoint1=geo!stopOver!{to.Latitude.ToString(nfi)},{to.Longitude.ToString(nfi)}")
+                .Append($"&departure={time.ToString("yyyy-MM-ddTHH:mm:ss")}")
                 .ToString();
             return await Execute<HereRouteResponse>(url);
         }

@@ -3,12 +3,23 @@ namespace TulaRouteSearcherAPI.Models
 {
     public class HereRouteResponse
     {
+        public HereRouteResponseWrap Response { get; set; }
+    }
+
+    public class HereRouteResponseWrap
+    {
         public HereRouteInfo[] Route { get; set; }
     }
 
     public class HereRouteInfo
     {
         public HereLegInfo[] Leg { get; set; }
+        public HerePublicTransportLine[] PublicTransportLine { get; set; }
+    }
+
+    public class HerePublicTransportLine
+    {
+        public string LineName { get; set; }
     }
 
     public class HereLegInfo

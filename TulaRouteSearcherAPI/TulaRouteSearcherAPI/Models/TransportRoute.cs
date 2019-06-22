@@ -5,6 +5,6 @@ namespace TulaRouteSearcherAPI.Models
     public class TransportRoute
     {
         public string Transport { get; set; }
-        public IEnumerable<RoutePoint> Points { get; set; }
+        public List<RoutePoint> Points { get; set; }
     }
 }
