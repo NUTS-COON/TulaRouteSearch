@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TulaRouteSearcherAPI</name>
+    </assembly>
+    <members>
+        <member name="M:TulaRouteSearcherAPI.Controllers.TestController.GetTestData">
+            <summary>
+            TEST method
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
