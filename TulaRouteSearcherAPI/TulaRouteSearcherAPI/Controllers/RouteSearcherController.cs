@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
-using TulaRouteSearcherAPI.Models;
 using TulaRouteSearcherAPI.Services;
 using TulaRouteSearcherAPI.ViewModels;
 
@@ -13,12 +11,14 @@ namespace TulaRouteSearcherAPI.Controllers
     public class RouteSearcherController : Controller
     {
         private readonly IHereService _hereService;
+        private readonly ISuggestionSearcher _suggestionSearcher;
         private readonly IRouteSearcher _routeSearcher;
 
-        public RouteSearcherController(IHereService hereService, IRouteSearcher routeSearcher)
+        public RouteSearcherController(IHereService hereService, IRouteSearcher routeSearcher, ISuggestionSearcher suggestionSearcher)
         {
             _hereService = hereService;
             _routeSearcher = routeSearcher;
+            _suggestionSearcher = suggestionSearcher;
         }
 
         /// <summary> Метод получения предложений по адресу </summary>
@@ -29,41 +29,8 @@ namespace TulaRouteSearcherAPI.Controllers
             if (string.IsNullOrEmpty(text?.Text))
                 return Ok();
 
-            var hereSuggestions = await _hereService.GetSuggestions(text.Text);
-            if (hereSuggestions == null)
-                return Ok();
-
-            var result = hereSuggestions.Suggestions.Select(suggestion => new SuggesionAddress
-            {
-                Address = suggestion.Label,
-                HereLocationId = suggestion.LocationId
-            });
-
+            var result = await _suggestionSearcher.GetSuggestions(text.Text);
             return Ok(result);
-
-            //var result = new List<AddressInfo>
-            //{
-            //    new AddressInfo
-            //    {
-            //        Coordinate = new Coordinate
-            //        {
-            //            Latitude = 54.166637,
-            //            Longitude = 37.587081
-            //        },
-            //        Address = "просп. Ленина, 92",
-            //        HereLocationId = "NT_5mGkj3z90Fbj4abzMbUE4C_xA"
-            //    },
-            //    new AddressInfo
-            //    {
-            //        Coordinate = new Coordinate
-            //        {
-            //            Latitude = 54.166637,
-            //            Longitude = 37.587081
-            //        },
-            //        Address = "просп. Ленина, 93",
-            //        HereLocationId = "NT_5mGkj3z90Fbj4abzMbUE4C_xA"
-            //    },
-            //};
         }
 
         /// <summary> Метод поиска маршрутов  </summary>
