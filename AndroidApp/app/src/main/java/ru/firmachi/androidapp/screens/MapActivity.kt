@@ -42,12 +42,12 @@ class MapActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setupViewModel()
         initialize()
-        //checkPermissions()
     }
 
     override fun onStart() {
         super.onStart()
         viewModel.ready(addressFrom, addressTo)
+        map_total_time.text = "Построение маршрута..."
     }
 
     private fun getSupportMapFragment(): SupportMapFragment {
@@ -59,6 +59,7 @@ class MapActivity : AppCompatActivity() {
         viewModel.routeLiveData.observe(this, android.arch.lifecycle.Observer { it ->
             if(it != null){
                 drawRoute(it.first().routes)
+                map_total_time.text = ""
             }else{
                 map_total_time.text = "Не удалось получить информацию о маршруте"
             }
@@ -161,10 +162,10 @@ class MapActivity : AppCompatActivity() {
                     map!!.addMapObject(mapRoute)
                     mapRoute.color = color
 
-                    val firstPoint = transportRoute.points[0].coordinate
+                    val startPoint = transportRoute.points[0].coordinate
                     val point = MapMarker(RGBToHUE(color))
                     point.title = transportRoute.transport
-                    point.coordinate = GeoCoordinate(firstPoint.latitude, firstPoint.longitude)
+                    point.coordinate = GeoCoordinate(startPoint.latitude, startPoint.longitude)
                     map!!.addMapObject(point)
                     //map!!.zoomTo(result[0].route.boundingBox, Map.Animation.NONE, Map.MOVE_PRESERVE_ORIENTATION)
 
