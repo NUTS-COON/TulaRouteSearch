@@ -23,26 +23,26 @@ namespace TulaRouteSearcherAPI.Repositories
             return new SqlConnection(_connectionString);
         }
 
-        public Stop[] GetAllStops()
+        public async Task<Stop[]> GetAllStops()
         {
             using (var conn = CreateConnection())
             {
-                return conn.Query<Stop>("SELECT Id, Name, Lat AS Latitude, Lon AS Longitude FROM Stop").ToArray();
+                return (await conn.QueryAsync<Stop>("SELECT Id, Name, Lat AS Latitude, Lon AS Longitude FROM Stop")).ToArray();
             }
         }
 
-        public Route GetRoute(int routeId)
+        public async Task<Route> GetRoute(int routeId)
         {
             using (var conn = CreateConnection())
             {
-                return conn.Query<Route>("SELECT * FROM Route WHERE Id = @routeId", new { routeId }).FirstOrDefault();
+                return (await conn.QueryAsync<Route>("SELECT * FROM Route WHERE Id = @routeId", new { routeId })).FirstOrDefault();
             }
         }
 
-        public RouteItem[] GetRouteItems(int routeId)
+        public async Task<RouteItem[]> GetRouteItems(int routeId)
         {
             var query = @"
-                SELECT r.ToTime, s.Id AS StopId, Name, s.Lat AS Latitude, s.Lon AS Longitude
+                SELECT ISNULL(r.FromTime, r.ToTime) AS Time, s.Id AS StopId, Name, s.Lat AS Latitude, s.Lon AS Longitude
                 FROM 
                     RouteItems AS r
                     INNER JOIN Stop AS s ON r.StopId = s.Id
@@ -50,7 +50,7 @@ namespace TulaRouteSearcherAPI.Repositories
             
             using (var conn = CreateConnection())
             {
-                return conn.Query<RouteItem>(query, new { routeId }).ToArray();
+                return (await conn.QueryAsync<RouteItem>(query, new { routeId })).ToArray();
             }
         }
 
@@ -64,7 +64,7 @@ namespace TulaRouteSearcherAPI.Repositories
             }
         }
 
-        public SearchedRoute[] SearchRoutes(DateTime time, Stop from, Stop to)
+        public async Task<IEnumerable<SearchedRoute>> SearchRoutes(DateTime time, Stop from, Stop to)
         {
             var query = @"
                 SELECT TOP 10 r1.RouteId, DATEDIFF(SECOND, @time, r2.FromTime) AS TravelTime FROM 
@@ -77,13 +77,13 @@ namespace TulaRouteSearcherAPI.Repositories
 
             using (var conn = CreateConnection())
             {
-                return conn.Query<SearchedRoute>(query, new
+                return await conn.QueryAsync<SearchedRoute>(query, new
                 {
                     from = from.Id,
                     to = to.Id,
                     dayOfWeek = time.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)time.DayOfWeek,
                     time = time.TimeOfDay
-                }).ToArray();
+                });
             }
         }
     }

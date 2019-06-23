@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 using TulaRouteSearcherAPI.Extensions;
 
 namespace TulaRouteSearcherAPI
@@ -33,9 +34,29 @@ namespace TulaRouteSearcherAPI
 
             app.UseDeveloperExceptionPage();
             app.UseMvc();
+            app.UseMiddleware<CorsMiddleware>();
             app.UseStaticFiles();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1"));
+        }
+    }
+
+    public class CorsMiddleware
+    {
+        private readonly RequestDelegate _next;
+
+        public CorsMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public Task Invoke(HttpContext httpContext)
+        {
+            httpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+            httpContext.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+            httpContext.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Date, X-Api-Version, X-File-Name");
+            httpContext.Response.Headers.Add("Access-Control-Allow-Methods", "POST,GET,PUT,PATCH,DELETE,OPTIONS");
+            return _next(httpContext);
         }
     }
 }
