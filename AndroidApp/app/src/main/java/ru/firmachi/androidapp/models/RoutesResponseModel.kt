@@ -13,13 +13,7 @@ data class Route(
 
 data class Point (
 
-    val coordinate : Coordinate,
+    val coordinate : Location,
     val description : String,
     val time : String
-)
-
-data class Coordinate (
-
-    val longitude : Double,
-    val latitude : Double
 )
