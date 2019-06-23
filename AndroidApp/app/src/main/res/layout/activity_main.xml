@@ -1,37 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+
+<RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-    <ru.firmachi.androidapp.screens.DelayAutoCompleteTextView
-            android:id="@+id/main_from_autocomplete"
+    <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
-            android:hint="Откуда"
-            android:text=""/>
+            android:layout_height="match_parent"
+            android:src="@drawable/main_background"
+            android:scaleType="centerCrop"/>
 
-    <ru.firmachi.androidapp.screens.DelayAutoCompleteTextView
-            android:id="@+id/main_to_autocomplete"
+    <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
-            android:hint="Куда"
-            android:text=""/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@android:color/transparent">
 
-    <Button
-            android:id="@+id/main_show_route_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
-            android:text="Показать маршрут"/>
-</LinearLayout>
+        <ru.firmachi.androidapp.screens.DelayAutoCompleteTextView
+                android:id="@+id/main_from_autocomplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/rounded_bg"
+                android:hint="Откуда"/>
+
+        <ru.firmachi.androidapp.screens.DelayAutoCompleteTextView
+                android:id="@+id/main_to_autocomplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/rounded_bg"
+                android:hint="Куда"/>
+
+        <Button
+                android:id="@+id/main_show_route_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/rounded_bg"
+                android:text="Показать маршрут"/>
+    </LinearLayout>
+
+</RelativeLayout>
 

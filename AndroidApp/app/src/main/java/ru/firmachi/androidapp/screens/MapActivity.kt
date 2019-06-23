@@ -4,6 +4,8 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.graphics.ColorUtils
 import android.support.v7.app.AppCompatActivity
+import android.view.View
+import android.view.Window
 import com.here.android.mpa.common.GeoCoordinate
 import com.here.android.mpa.common.OnEngineInitListener
 import com.here.android.mpa.common.ViewObject
@@ -39,6 +41,8 @@ class MapActivity : AppCompatActivity() {
     var right = 0.0
 
     public override fun onCreate(savedInstanceState: Bundle?) {
+        window.requestFeature(Window.FEATURE_ACTION_BAR)
+        supportActionBar?.hide()
         super.onCreate(savedInstanceState)
         setupViewModel()
         initialize()
@@ -47,7 +51,6 @@ class MapActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         viewModel.ready(addressFrom, addressTo)
-        map_total_time.text = "Построение маршрута..."
     }
 
     private fun getSupportMapFragment(): SupportMapFragment {
@@ -57,12 +60,14 @@ class MapActivity : AppCompatActivity() {
     private fun setupViewModel(){
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
         viewModel.routeLiveData.observe(this, android.arch.lifecycle.Observer { it ->
-            if(it != null){
+            if(it != null && it.isNotEmpty()){
                 drawRoute(it.first().routes)
                 map_total_time.text = ""
             }else{
+                map_total_time.visibility = View.VISIBLE
                 map_total_time.text = "Не удалось получить информацию о маршруте"
             }
+            map_progress_bar.visibility = View.GONE
         })
         viewModel.coordinateLiveData.observe(this, android.arch.lifecycle.Observer {
             if(it != null){
@@ -170,16 +175,17 @@ class MapActivity : AppCompatActivity() {
                     //map!!.zoomTo(result[0].route.boundingBox, Map.Animation.NONE, Map.MOVE_PRESERVE_ORIENTATION)
 
                 } else {
+                    map_total_time.visibility = View.VISIBLE
                     map_total_time.text = "Карты Here В С Ё. Помянем"
+                    map_progress_bar.visibility = View.GONE
                 }
             }
 
-            override fun onProgress(percentage: Int) {
-                //map_total_time.text = "Строим маршрут. Готово на ${percentage}%"
-            }
+            override fun onProgress(percentage: Int) { }
         })
         if (error != RouteManager.Error.NONE) {
             toast("Произошла ошибка при построении маршрута")
+            map_progress_bar.visibility = View.GONE
         }
     }
 

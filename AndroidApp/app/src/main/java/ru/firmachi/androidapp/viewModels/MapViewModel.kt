@@ -9,8 +9,6 @@ import io.reactivex.schedulers.Schedulers
 import ru.firmachi.androidapp.App
 import ru.firmachi.androidapp.models.*
 import ru.firmachi.androidapp.services.IApiService
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 
 
