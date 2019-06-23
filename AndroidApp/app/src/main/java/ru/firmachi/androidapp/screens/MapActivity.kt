@@ -94,6 +94,7 @@ class MapActivity : AppCompatActivity() {
             if (error == OnEngineInitListener.Error.NONE) {
                 mapFragment!!.mapGesture.addOnGestureListener(gestureListener)
                 map = mapFragment!!.map
+                map!!.setCenter(GeoCoordinate(54.193422, 37.616266), Map.Animation.NONE)
                 map!!.zoomLevel = 11.0
             } else {
                 toast("Карты Here В С Ё. Помянем")
