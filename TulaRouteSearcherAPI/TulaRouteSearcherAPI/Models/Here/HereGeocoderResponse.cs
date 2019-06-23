@@ -28,6 +28,5 @@ namespace TulaRouteSearcherAPI.Models
     public class HereGeocoderViewLocation
     {
         public Coordinate DisplayPosition { get; set; }
-        public Coordinate NavigationPosition { get; set; }
     }
 }
