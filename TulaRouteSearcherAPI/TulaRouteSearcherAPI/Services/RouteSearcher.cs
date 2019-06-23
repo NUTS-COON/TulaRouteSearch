@@ -29,16 +29,18 @@ namespace TulaRouteSearcherAPI.Services
                 return routes;
 
             var manualRoutes = await GetManualRoutes(time, from, to);
+            if (manualRoutes != null)
+            {
+                var tasks = manualRoutes.Select(r => ExtendManualRoute(r, time, from, to)).ToArray();
+                await Task.WhenAll(tasks);
 
-            var tasks = manualRoutes.Select(r => ExtendManualRoute(r, time, from, to)).ToArray();
-            await Task.WhenAll(tasks);
+                if (routes == null)
+                    routes = new List<TargetRoute>();
 
-            if (routes == null)
-                routes = new List<TargetRoute>();
+                routes.AddRange(tasks.Select(t => t.Result).Where(t => t != null));
+            }
 
-            routes.AddRange(tasks.Select(t => t.Result).Where(t => t != null));
-
-            return routes
+            return routes?
                 .Select(Convert)
                 .OrderBy(t => t.TravelTime)
                 .ToList();
