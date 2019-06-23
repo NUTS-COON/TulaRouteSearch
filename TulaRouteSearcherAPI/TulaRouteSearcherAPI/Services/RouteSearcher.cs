@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using TulaRouteSearcherAPI.Entities;
@@ -29,76 +28,107 @@ namespace TulaRouteSearcherAPI.Services
             if (routes != null && routes.Any() && routes.First().TravelTime < 7200)
                 return routes;
 
-            var manualRoutes = GetManualRoutes(time, from, to);
-            routes = new List<TargetRoute>();
-            foreach (var r in manualRoutes)
-            { 
-                var startPoint = r.GetStartPoint();
-                var endPoint = r.GetLastPoint();
-                var endTime = time.Date.Add(endPoint.GetTime()); 
+            var manualRoutes = await GetManualRoutes(time, from, to);
 
-                var startRoute = (await GetAutoRoutes(time, from, startPoint.Coordinate, true))?.FirstOrDefault();
-                var endRoute = (await GetAutoRoutes(time.Date.Add(endPoint.GetTime()), endPoint.Coordinate, to, true))?.FirstOrDefault();
+            var tasks = manualRoutes.Select(r => ExtendManualRoute(r, time, from, to)).ToArray();
+            await Task.WhenAll(tasks);
 
-                if (startRoute == null || endRoute == null)
-                    continue;
+            if (routes == null)
+                routes = new List<TargetRoute>();
 
-                var startRouteEndTime = startRoute.GetLastPoint().GetTime();
-                if (startRouteEndTime > startPoint.GetTime())
-                    continue;
+            routes.AddRange(tasks.Select(t => t.Result).Where(t => t != null));
 
-                routes.Add(new TargetRoute
-                {
-                    TravelTime = startRoute.TravelTime + r.TravelTime + endRoute.TravelTime,
-                    Routes = startRoute.Routes.Concat(r.Routes).Concat(endRoute.Routes).ToList()
-                });
-            }
-
-            routes = routes.OrderBy(t => t.TravelTime).ToList();
-
-            return routes;
+            return routes
+                .Select(Convert)
+                .OrderBy(t => t.TravelTime)
+                .ToList();
         }
 
-        private List<TargetRoute> GetManualRoutes(DateTime time, Coordinate from, Coordinate to)
+        private TargetRoute Convert(TargetRoute r)
         {
-            var fromStops = GetNearestStops(from);
-            var toStops = GetNearestStops(to);
+            r.Routes = r.Routes.Where(t => t.Points.Count > 1).ToList();
+            return r;
+        }
 
-            List<SearchedRouteContainer> res = new List<SearchedRouteContainer>();
-            foreach(var fromStop in fromStops)
+        private async Task<TargetRoute> ExtendManualRoute(TargetRoute r, DateTime time, Coordinate from, Coordinate to)
+        {
+            var startPoint = r.GetStartPoint();
+            var endPoint = r.GetLastPoint();
+            var endTime = time.Date.Add(endPoint.GetTime());
+
+            var startRoute = (await GetAutoRoutes(time, from, startPoint.Coordinate, true))?.FirstOrDefault();
+            var endRoute = (await GetAutoRoutes(time.Date.Add(endPoint.GetTime()), endPoint.Coordinate, to, true))?.FirstOrDefault();
+
+            if (startRoute == null || endRoute == null)
+                return null;
+
+            var startRouteEndTime = startRoute.GetLastPoint().GetTime();
+            if (startRouteEndTime > startPoint.GetTime())
+                return null;
+
+            return new TargetRoute
             {
-                foreach (var toStop in toStops)
-                {
-                    var routes = _dbRepository.SearchRoutes(time, fromStop, toStop)
-                        .Select(r => new SearchedRouteContainer
-                        {
-                            From = fromStop,
-                            To = toStop,
-                            RouteId = r.RouteId,
-                            TravelTime = r.TravelTime
-                        })
-                        .ToArray();
-                    res.AddRange(routes);
-                }
-            }
+                TravelTime = (int)(endRoute.GetLastPoint().GetTime() - time.TimeOfDay).TotalSeconds,
+                Routes = startRoute.Routes.Concat(r.Routes).Concat(endRoute.Routes).ToList()
+            };
+        }
+
+        private async Task<List<TargetRoute>> GetManualRoutes(DateTime time, Coordinate from, Coordinate to)
+        {
+            var res = await FindManualRoutes(time, from, to);
 
             if (!res.Any())
                 return null;
 
             var minTravelTime = res.Select(t => t.TravelTime).Min();
 
-            return res
+            var result = res
                 .Where(t => t.TravelTime < Math.Max(2 * minTravelTime, minTravelTime + 7200))
                 .OrderBy(t => t.TravelTime)
                 .Take(5)
-                .Select(t => GetRouteFromDb(t, time))
-                .ToList();
+                .ToArray();
+
+            var tasks = res.Select(t => GetRouteFromDb(t, time)).ToArray();
+            await Task.WhenAll(tasks);
+            return tasks.Select(t => t.Result).ToList();
         }
 
-        private TargetRoute GetRouteFromDb(SearchedRouteContainer sr, DateTime time)
+        private async Task<List<SearchedRouteContainer>> FindManualRoutes(DateTime time, Coordinate from, Coordinate to)
         {
-            var route = _dbRepository.GetRoute(sr.RouteId);
-            var routeItems = _dbRepository.GetRouteItems(sr.RouteId);
+            var fromStops = await GetNearestStops(from);
+            var toStops = await GetNearestStops(to);
+
+            var tasks = new List<Task<SearchedRouteContainer[]>>();
+            foreach (var fromStop in fromStops)
+            {
+                foreach (var toStop in toStops)
+                {
+                    tasks.Add(FindManualRoutes(time, fromStop, toStop));
+                }
+            }
+            await Task.WhenAll(tasks);
+            return tasks.SelectMany(t => t.Result).ToList();
+        }
+
+        private async Task<SearchedRouteContainer[]> FindManualRoutes(DateTime time, Stop fromStop, Stop toStop)
+        {
+            var routes = await _dbRepository.SearchRoutes(time, fromStop, toStop);
+
+            return routes
+                .Select(r => new SearchedRouteContainer
+                {
+                    From = fromStop,
+                    To = toStop,
+                    RouteId = r.RouteId,
+                    TravelTime = r.TravelTime
+                })
+                .ToArray();
+        }
+
+        private async Task<TargetRoute> GetRouteFromDb(SearchedRouteContainer sr, DateTime time)
+        {
+            var route = await _dbRepository.GetRoute(sr.RouteId);
+            var routeItems = await _dbRepository.GetRouteItems(sr.RouteId);
 
             var usedItems = new List<RouteItem>();
             bool use = false;
@@ -125,7 +155,7 @@ namespace TulaRouteSearcherAPI.Services
                             .Select(x => new RoutePoint
                             {
                                 Description = x.Name,
-                                Time = time.Date.Add(x.ToTime).ToString("HH:mm:ss"),
+                                Time = time.Date.Add(x.Time).ToString("HH:mm:ss"),
                                 Coordinate = new Coordinate
                                 {
                                     Latitude = x.Latitude,
@@ -139,11 +169,11 @@ namespace TulaRouteSearcherAPI.Services
             };
         }
 
-        private Stop[] GetNearestStops(Coordinate point)
+        private async Task<Stop[]> GetNearestStops(Coordinate point)
         {
             if(_allStops == null)
             {
-                _allStops = _dbRepository.GetAllStops();
+                _allStops = await _dbRepository.GetAllStops();
             }
 
             return _allStops

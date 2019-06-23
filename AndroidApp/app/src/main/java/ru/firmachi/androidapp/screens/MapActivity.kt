@@ -3,33 +3,38 @@ package ru.firmachi.androidapp.screens
 import android.Manifest
 import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.view.View
-import android.widget.TextView
+import android.support.v4.graphics.ColorUtils
+import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
+import com.here.android.mpa.common.GeoBoundingBox
 import com.here.android.mpa.common.GeoCoordinate
 import com.here.android.mpa.common.OnEngineInitListener
 import com.here.android.mpa.mapping.Map
+import com.here.android.mpa.mapping.MapMarker
 import com.here.android.mpa.mapping.MapRoute
 import com.here.android.mpa.mapping.SupportMapFragment
-import com.here.android.mpa.routing.*
+import com.here.android.mpa.routing.RouteManager
+import com.here.android.mpa.routing.RouteOptions
+import com.here.android.mpa.routing.RoutePlan
+import com.here.android.mpa.routing.RouteResult
 import kotlinx.android.synthetic.main.activity_map.*
 import org.jetbrains.anko.toast
 import ru.firmachi.androidapp.R
 import ru.firmachi.androidapp.models.Location
-import ru.firmachi.androidapp.models.RoutesResponseModel
+import ru.firmachi.androidapp.models.Route
 import ru.firmachi.androidapp.models.SuggestionsAddress
 import ru.firmachi.androidapp.viewModels.MapViewModel
 import java.util.*
+import kotlin.random.Random
+
+
 
 class MapActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MapViewModel
-
-    private val LOG_TAG = "FIRMACHI_APP"
 
     private val REQUEST_PERMISSIONS_CODE = 1
     private val REQUIRED_SDK_PERMISSIONS =
@@ -38,14 +43,23 @@ class MapActivity : AppCompatActivity() {
     private var map: Map? = null
     private var mapFragment: SupportMapFragment? = null
 
-    private var textViewResult: TextView? = null
+    private lateinit var addressFrom: SuggestionsAddress
+    private lateinit var addressTo: SuggestionsAddress
 
-    private var mapRoute: MapRoute? = null
+    var top = 0.0
+    var left = 0.0
+    var bottom = 0.0
+    var right = 0.0
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupViewModel()
         checkPermissions()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.ready(addressFrom, addressTo)
     }
 
     private fun getSupportMapFragment(): SupportMapFragment {
@@ -54,15 +68,20 @@ class MapActivity : AppCompatActivity() {
 
     private fun setupViewModel(){
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
-        viewModel.routeLiveData.observe(this, android.arch.lifecycle.Observer {
+        viewModel.routeLiveData.observe(this, android.arch.lifecycle.Observer { it ->
             if(it != null){
-                drawRoute(it)
+                it.forEach {
+                    drawRoute(it.routes)
+                }
+            }else{
+                map_total_time.text = "Не удалось получить информацию о маршруте"
             }
         })
-    }
-
-
-    private fun drawRoute(routes: List<RoutesResponseModel>) {
+        viewModel.coordinateLiveData.observe(this, android.arch.lifecycle.Observer {
+            if(it != null){
+                initBoundingBoxCoordinates(it)
+            }
+        })
     }
 
 
@@ -70,48 +89,41 @@ class MapActivity : AppCompatActivity() {
         setContentView(R.layout.activity_map)
         val addressFromJson = intent.extras.getString("addressFrom")
         val addressToJson = intent.extras.getString("addressTo")
-        val addressFrom = SuggestionsAddress.deserialize(addressFromJson)
-        val addressTo = SuggestionsAddress.deserialize(addressToJson)
-        viewModel.ready(addressFrom!!, addressTo!!)
+        addressFrom = SuggestionsAddress.deserialize(addressFromJson)!!
+        addressTo = SuggestionsAddress.deserialize(addressToJson)!!
 
-        initMap(viewModel.getCenterLocation(addressFrom.coordinate, addressTo.coordinate))
+        initMap()
     }
 
-    private fun initMap(centerLocation: Location) {
+
+    private fun initMap() {
         mapFragment = getSupportMapFragment()
         mapFragment!!.init { error ->
             if (error == OnEngineInitListener.Error.NONE) {
                 map = mapFragment!!.map
-                map!!.setCenter(
-                    GeoCoordinate(49.196261, -123.004773, 0.0),
-                    Map.Animation.NONE
-                )
-                // Set the map zoom level to the average between min and max (no animation)
-                map!!.zoomLevel = (map!!.maxZoomLevel + map!!.minZoomLevel) / 2
+                map!!.zoomLevel = 16.0
             } else {
-                toast("Карты Here В С Е. Помянем")
+                toast("Карты Here В С Ё. Помянем")
                 finish()
             }
         }
-
-        textViewResult = map_total_time
-        textViewResult!!.setText(R.string.textview_routecoordinates_2waypoints)
-
     }
 
-    // Functionality for taps of the "Get Directions" button
-    fun getDirections(view: View) {
-        // 1. clear previous results
-        textViewResult!!.text = ""
-        if (map != null && mapRoute != null) {
-            map!!.removeMapObject(mapRoute)
-            mapRoute = null
+
+    private fun drawRoute(route: List<Route>){
+        route.forEach{
+            val color = getARGBAsNull(
+                254,
+                Random.nextInt(1, 255),
+                Random.nextInt(1, 255),
+                Random.nextInt(1, 255))
+            drawTransportRoute(it, color)
         }
+    }
 
-        // 2. Initialize RouteManager
+
+    private fun drawTransportRoute(transportRoute: Route, color: Int){
         val routeManager = RouteManager()
-
-        // 3. Select routing options
         val routePlan = RoutePlan()
 
         val routeOptions = RouteOptions()
@@ -119,52 +131,42 @@ class MapActivity : AppCompatActivity() {
         routeOptions.routeType = RouteOptions.Type.FASTEST
         routePlan.routeOptions = routeOptions
 
-        // 4. Select Waypoints for your routes
-        // START: Nokia, Burnaby
-        routePlan.addWaypoint(GeoCoordinate(49.1966286, -123.0053635))
-
-        // END: Airport, YVR
-        routePlan.addWaypoint(GeoCoordinate(49.1947289, -123.1762924))
-
-        // 5. Retrieve Routing information via RouteManagerEventListener
-        val error = routeManager.calculateRoute(routePlan, routeManagerListener)
-        if (error != RouteManager.Error.NONE) {
-            Toast.makeText(
-                applicationContext,
-                "Route calculation failed with: $error", Toast.LENGTH_SHORT
-            )
-                .show()
+        transportRoute.points.forEach {
+            setBoundingBoxCoordinates(it.coordinate)
+            routePlan.addWaypoint(GeoCoordinate(it.coordinate.longitude, it.coordinate.latitude))
         }
-    }
 
-    private val routeManagerListener = object : RouteManager.Listener {
-        override fun onCalculateRouteFinished(
-            errorCode: RouteManager.Error,
-            result: List<RouteResult>
-        ) {
+        val error = routeManager.calculateRoute(routePlan, object : RouteManager.Listener {
+            override fun onCalculateRouteFinished(errorCode: RouteManager.Error, result: List<RouteResult>) {
 
-            if (errorCode == RouteManager.Error.NONE && result[0].route != null) {
-                // create a map route object and place it on the map
-                mapRoute = MapRoute(result[0].route)
-                map!!.addMapObject(mapRoute)
+                if (errorCode == RouteManager.Error.NONE && result[0].route != null) {
+                    val mapRoute = MapRoute(result[0].route)
+                    map!!.addMapObject(mapRoute)
+                    mapRoute.color = color
 
-                // Get the bounding box containing the route and zoom in (no animation)
-                val gbb = result[0].route.boundingBox
-                map!!.zoomTo(gbb, Map.Animation.NONE, Map.MOVE_PRESERVE_ORIENTATION)
+                    val firstPoint = transportRoute.points[0].coordinate
+                    val point = MapMarker(RGBToHUE(color))
+                    point.coordinate = GeoCoordinate(firstPoint.latitude, firstPoint.longitude)
+                    map!!.addMapObject(point)
 
-                textViewResult!!.text = String.format(
-                    "Route calculated with %d maneuvers.",
-                    result[0].route.maneuvers.size
-                )
-            } else {
-                textViewResult!!.text = String.format("Route calculation failed: %s", errorCode.toString())
+                } else {
+                    map_total_time.text = "Карты Here В С Ё. Помянем"
+                }
+                map!!.zoomTo(
+                    GeoBoundingBox(GeoCoordinate(top, left), GeoCoordinate(bottom, right)),
+                    Map.Animation.NONE,
+                    Map.MOVE_PRESERVE_ORIENTATION)
             }
-        }
 
-        override fun onProgress(percentage: Int) {
-            textViewResult!!.text = String.format("... %d percent done ...", percentage)
+            override fun onProgress(percentage: Int) {
+                //map_total_time.text = "Строим маршрут. Готово на ${percentage}%"
+            }
+        })
+        if (error != RouteManager.Error.NONE) {
+            toast("Произошла ошибка при построении маршрута")
         }
     }
+
 
     private fun checkPermissions() {
         val missingPermissions = ArrayList<String>()
@@ -188,10 +190,8 @@ class MapActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>,
-        grantResults: IntArray
-    ) {
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             REQUEST_PERMISSIONS_CODE -> {
                 for (index in permissions.indices.reversed()) {
@@ -207,5 +207,43 @@ class MapActivity : AppCompatActivity() {
                 initialize()
             }
         }
+    }
+
+    private fun initBoundingBoxCoordinates(coordinate: Location){
+        top = coordinate.latitude
+        bottom = coordinate.latitude
+        left = coordinate.longitude
+        right = coordinate.longitude
+
+    }
+
+    private fun setBoundingBoxCoordinates(coordinate: Location){
+        if(coordinate.longitude > top){
+            top = coordinate.longitude
+        }else if(coordinate.longitude < bottom){
+            bottom = coordinate.longitude
+        }
+        if(coordinate.latitude > right){
+            right = coordinate.latitude
+        }else if(coordinate.latitude < left){
+            left = coordinate.latitude
+        }
+    }
+
+    private fun getARGBAsNull(a: Int, r: Int, g: Int, b: Int): Int{
+        return (a shl 24) + (r shl 16) + (g shl 8) + b
+    }
+
+
+    private fun RGBToHUE(rgb: Int): Float{
+        var r = (rgb shr 16) and 0xFF
+        var g = (rgb shr 8) and 0xFF
+        var b = rgb and 0xFF
+
+        val arr = floatArrayOf(0f,0f,0f)
+
+        ColorUtils.RGBToHSL(r, g, b, arr)
+
+        return arr[0]
     }
 }

@@ -10,6 +10,11 @@ import ru.firmachi.androidapp.services.AddressSearchService
 import ru.firmachi.androidapp.services.IAddressSearchService
 import ru.firmachi.androidapp.services.IApiService
 import javax.inject.Singleton
+import okhttp3.ResponseBody
+import retrofit2.Converter
+import java.io.IOException
+import java.lang.reflect.Type
+
 
 @Module
 class ApplicationModule(private val context: Context) {
