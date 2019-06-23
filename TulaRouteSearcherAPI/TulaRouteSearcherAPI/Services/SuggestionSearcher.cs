@@ -32,7 +32,6 @@ namespace TulaRouteSearcherAPI.Services
             return result;
         }
 
-
         private async Task<IEnumerable<SuggesionAddress>> GetHereSuggestions(string text)
         {
             var hereSuggestions = await _hereService.GetSuggestions(text);
@@ -41,9 +40,9 @@ namespace TulaRouteSearcherAPI.Services
 
             return hereSuggestions.Suggestions.Select(suggestion => new SuggesionAddress
             {
-                Address = suggestion.Label,
+                Address = suggestion.Address.FullAddress,
                 HereLocationId = suggestion.LocationId
-            });
+            }).Distinct(new SuggesionAddressComparer());
         }
 
         private async Task<IEnumerable<SuggesionAddress>> GetRepositorySuggestions(string text)
