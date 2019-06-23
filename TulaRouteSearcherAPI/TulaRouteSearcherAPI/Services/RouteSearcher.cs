@@ -152,7 +152,7 @@ namespace TulaRouteSearcherAPI.Services
                 {
                     new TransportRoute
                     {
-                        Transport = route.Name,
+                        Transport = "Автобус " + route.Name,
                         Points = usedItems
                             .Select(x => new RoutePoint
                             {
@@ -217,17 +217,7 @@ namespace TulaRouteSearcherAPI.Services
                     int travelTime = 0;
                     TransportRoute route = new TransportRoute() { Transport = "Пешком", Points = new List<RoutePoint>() };
                     foreach (var maneuver in maneuvers)
-                    {
-                        if (maneuver.Action == "enter")
-                        {
-                            if(route.Points.Any())
-                                routes.Add(route);
-
-                            route = new TransportRoute() { Transport = $"Автобус {transports[i].LineName}", Points = new List<RoutePoint>() };
-                            i++;
-                        }
-
-                        var p = new RoutePoint
+                    {                        var p = new RoutePoint
                         {
                             Description = maneuver.StopName,
                             Time = time.AddSeconds(travelTime).ToString("HH:mm:ss"),
@@ -239,6 +229,15 @@ namespace TulaRouteSearcherAPI.Services
                         };
                         route.Points.Add(p);
                         travelTime += maneuver.TravelTime;
+
+                        if (maneuver.Action == "enter")
+                        {
+                            if (route.Points.Count() > 1)
+                                routes.Add(route);
+
+                            route = new TransportRoute() { Transport = $"Автобус {transports[i].LineName}", Points = new List<RoutePoint>() { p } };
+                            i++;
+                        }
 
                         if (maneuver.Action == "leave")
                         {
