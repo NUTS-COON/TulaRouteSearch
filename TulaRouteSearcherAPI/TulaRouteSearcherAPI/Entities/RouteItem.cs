@@ -5,7 +5,7 @@ namespace TulaRouteSearcherAPI.Entities
 {
     public class RouteItem : Coordinate
     {
-        public TimeSpan ToTime { get; set; }
+        public TimeSpan Time { get; set; }
         public string Name { get; set; }
         public int StopId { get; set; }
     }
