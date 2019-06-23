@@ -27,7 +27,7 @@ namespace TulaRouteSearcherAPI.Repositories
         {
             using (var conn = CreateConnection())
             {
-                return conn.Query<Stop>("SELECT * FROM Stop").ToArray();
+                return conn.Query<Stop>("SELECT Id, Name, Lat AS Latitude, Lon AS Longitude FROM Stop").ToArray();
             }
         }
 
@@ -41,9 +41,16 @@ namespace TulaRouteSearcherAPI.Repositories
 
         public RouteItem[] GetRouteItems(int routeId)
         {
+            var query = @"
+                SELECT r.ToTime, s.Id AS StopId, Name, s.Lat AS Latitude, s.Lon AS Longitude
+                FROM 
+                    RouteItems AS r
+                    INNER JOIN Stop AS s ON r.StopId = s.Id
+                WHERE r.RouteId = @routeId";
+            
             using (var conn = CreateConnection())
             {
-                return conn.Query<RouteItem>("SELECT * FROM RouteItems WHERE Id = @routeId", new { routeId }).ToArray();
+                return conn.Query<RouteItem>(query, new { routeId }).ToArray();
             }
         }
 
@@ -60,19 +67,20 @@ namespace TulaRouteSearcherAPI.Repositories
         public SearchedRoute[] SearchRoutes(DateTime time, Stop from, Stop to)
         {
             var query = @"
-                SELECT top 3 r1.RouteId FROM 
+                SELECT TOP 10 r1.RouteId, DATEDIFF(SECOND, @time, r2.FromTime) AS TravelTime FROM 
                     RouteItems AS r1
                     INNER JOIN RouteItems AS r2 ON r1.RouteId = r2.RouteId AND r1.ToTime < r2.FromTime
                     INNER JOIN RouteDays AS rd ON r1.RouteId = rd.RouteId
                 WHERE 
-                    r1.StopId = @from AND r2.StopId = @to AND rd.DayOfWeek = @dayOfWeek AND r1.ToTime > 'time'";
+                    r1.StopId = @from AND r2.StopId = @to AND rd.DayOfWeek = @dayOfWeek AND r1.ToTime > @time
+                ORDER BY r2.FromTime";
 
             using (var conn = CreateConnection())
             {
                 return conn.Query<SearchedRoute>(query, new
                 {
-                    from,
-                    to,
+                    from = from.Id,
+                    to = to.Id,
                     dayOfWeek = time.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)time.DayOfWeek,
                     time = time.TimeOfDay
                 }).ToArray();
