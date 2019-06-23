@@ -1,0 +1,76 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+.header {
+  position: absolute;
+  height: 62px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0 16px;
+  width: calc(100% - 32px);
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.20);
+  background: #ffffff;
+  z-index: 2;
+  @include for-tablet-portrait-up {
+    height: 70px;
+  }
+
+  &__container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 936px;
+  }
+
+  &_header-without-shadow {
+    box-shadow: none;
+  }
+
+  &__title {
+    font-family: $font-family;
+    font-size: 16px;
+  }
+
+  &__logo-image {
+    background: url('images/logo.png') no-repeat;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    margin-top: 1px;
+    background-size: contain !important;
+    @include for-phone-only {
+      background: url('images/logo_mob.png') no-repeat;
+    }
+    @include for-phone-only-retina {
+      background: url('images/logo_mob_2x.png') no-repeat;
+    }
+    @include for-desktop-up-retina {
+      background: url('images/logo_2x.png') no-repeat;
+    }
+  }
+
+  &__title-with-logo {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__close-contact-popup-button {
+    background: url('images/close-button.png') no-repeat;
+    width: 16px;
+    height: 16px;
+    background-size: contain;
+  }
+
+  &__furnas-link {
+    margin-left: 88px;
+    @include for-phone-only {
+      margin-left: 16px;
+      display: none;
+    }
+  }
+
+}

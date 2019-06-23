@@ -1,0 +1,104 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+.documents {
+  &__list {
+    list-style: none;
+    padding: 0;
+  }
+
+  &__list-item {
+    margin-bottom: 16px;
+    @include for-phone-only {
+      margin-bottom: 64px;
+    }
+  }
+
+  &__list-item-text {
+    font-family: $font-family;
+    font-size: 16px;
+    color: #333333;
+    line-height: 24px;
+  }
+
+  &__tags-container {
+    margin-bottom: 24px;
+    @include for-tablet-landscape-up {
+      position: absolute;
+      width: 300px;
+      margin-left: -324px;
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 4px;
+      margin-bottom: 0;
+    }
+  }
+
+  &__tag {
+    font-family: $font-family;
+    font-size: 14px;
+    border-radius: 6px;
+    padding: 2px 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    margin-right: 16px;
+    @include for-tablet-landscape-up {
+      margin-left: 16px;
+      margin-right: 0;
+    }
+
+  }
+
+  &__tag-age {
+    color: #9165FF;
+    background: rgba(145, 101, 255, 0.1);
+  }
+
+  &__tag-accommodation {
+    color: #65A2FF;
+    background: rgba(101, 162, 255, 0.11);
+  }
+
+  &__tag-transport {
+    color: #FF65B8;
+    background: rgba(255, 101, 184, 0.11);
+  }
+
+  &__tag-driver {
+    color: #FF65B8;
+    background: rgba(255, 101, 184, 0.11);
+  }
+
+  &__tag-profession {
+    color: #15B798;
+    background: rgba(21, 183, 152, 0.11);
+  }
+
+  &__tag-payer {
+    color: #FA8E67;
+    background: rgba(250, 146, 255, 0.1);
+  }
+
+  &__quote {
+    margin: 48px 0 !important;
+  }
+
+  &__quote-list {
+    padding-left: 20px;
+  }
+
+  &__quote-list-item {
+    list-style-type: disc;
+    margin-bottom: 16px;
+    color: rgba(51, 51, 51, 0.9);
+  }
+
+  &__quote-list-text {
+    padding-left: 8px;
+    color: #333333;
+  }
+
+  &__paragraph {
+    margin-bottom: 16px;
+  }
+}

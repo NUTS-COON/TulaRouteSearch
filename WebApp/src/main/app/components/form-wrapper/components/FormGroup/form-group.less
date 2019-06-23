@@ -1,0 +1,44 @@
+.form-group-container {
+  display: flex;
+
+  > div:first-child:not(:last-child) {
+    > .form-component {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+
+  > div + div {
+    > .form-component {
+      &:not(.form-component__focused):not(.form-component__validation-success):not(.form-component__validation-error) {
+        border-left: transparent;
+      }
+
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+
+  > .core__button:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  > .core__button:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  > .abstract-autocomplete:not(:first-child) > div > .form-component  {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  > .abstract-autocomplete:not(:last-child) > div > .form-component  {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  button + button {
+    margin-left: -1px;
+  }
+}

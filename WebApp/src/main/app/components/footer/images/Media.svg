@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>Media</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Welcome" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-HD" transform="translate(-1011.000000, -6821.000000)">
+            <g id="Media" transform="translate(1011.000000, 6821.000000)">
+                <rect id="Rectangle-12" stroke="#FFFFFF" fill-rule="nonzero" x="0.5" y="0.5" width="23" height="23" rx="5"></rect>
+                <text id="M" font-family="Baskerville-Bold, Baskerville" font-size="12" font-weight="bold" fill="#FFFFFF">
+                    <tspan x="6" y="16">M</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,94 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+.home {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__content {
+    margin-top: 100px;
+    max-width: 700px;
+    padding: 0 20px;
+
+    @include for-desktop-up {
+      margin-top: 200px;
+    }
+
+    @include for-big-desktop-up {
+      margin-top: 300px;
+    }
+  }
+
+  &__panel {
+    background: #ffffff;
+    border-radius: 25px;
+    width: 504px;
+    height: 400px;
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    z-index: 1;
+  }
+
+  &__panel-title {
+    background: #008577;
+    color: #ffffff;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    height: 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+  }
+
+  &__button-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 98px;
+  }
+
+  &__to {
+    width: 330px;
+    align-self: center;
+    margin: 24px auto;
+  }
+
+  &__from {
+    width: 330px;
+    align-self: center;
+    margin: 24px auto;
+  }
+
+  &__route {
+    font-family: Montserrat-SemiBold;
+    font-size: 16px;
+    color: #3E5662;
+    text-align: center;
+    margin-top: 38px;
+    margin-left: -223px;
+  }
+  &__a {
+    position: absolute;
+    z-index: 1;
+    margin-left: -28px;
+    margin-top: 13px;
+  }
+  &__b {
+    position: absolute;
+    z-index: 1;
+    margin-left: -28px;
+    margin-top: 13px;
+  }
+}
+
+#mapContainer {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+}

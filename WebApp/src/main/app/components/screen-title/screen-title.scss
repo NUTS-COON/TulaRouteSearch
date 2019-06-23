@@ -1,0 +1,16 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+.section-title {
+  font-family: $font-family;
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+  line-height: 24px;
+  color: #333333;
+  margin-bottom: 30px;
+  @include for-tablet-portrait-up {
+    font-family: $font-family-alternative;
+    font-weight: 400;
+  }
+}

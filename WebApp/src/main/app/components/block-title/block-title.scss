@@ -1,0 +1,16 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+.block-title {
+  font-family: $font-family;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 20px 0;
+  color: $font-color-black;
+
+  @include for-tablet-portrait-up {
+    font-family: $font-family-alternative;
+    font-weight: 400;
+  }
+
+}

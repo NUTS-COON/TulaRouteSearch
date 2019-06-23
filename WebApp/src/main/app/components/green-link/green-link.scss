@@ -1,0 +1,8 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+.green-link {
+  font-family: $font-family;
+  color: #15B798;
+  border-bottom: 1px solid;
+}

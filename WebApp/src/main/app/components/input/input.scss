@@ -1,0 +1,26 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+.input {
+  font-family: Rubik, sans-serif;
+  font-size: 18px;
+  line-height: 21px;
+  color: #333333;
+  outline: none;
+  box-sizing: border-box;
+  box-shadow: none;
+  -webkit-appearance: none;
+  background: rgba(162, 162, 162, 0.11);
+  border-radius: 23px;
+  border: none;
+  height: 56px;
+  padding: 17px 32px;
+  caret-color: #FF815F;
+  width: 100%;
+  &::placeholder {
+    color: #333333;
+    mix-blend-mode: normal;
+    opacity: 0.3;
+  }
+
+}

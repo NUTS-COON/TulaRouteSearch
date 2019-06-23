@@ -1,0 +1,79 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+.button {
+  font-family: $font-family;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  border-radius: 3px;
+  border: none;
+
+  &_default {
+    padding: 9px 18px;
+    line-height: 14px;
+    background-color: #ffffff;
+    border-radius: 26px;
+    background-image: linear-gradient(-90deg, #FFBBA4 0%, #FF856B 100%);
+    font-family: Montserrat-Regular;
+    font-size: 18px;
+    color: #FFFFFF;
+    @include for-tablet-portrait-up {
+      padding: 16px 42px;
+      font-size: 16px;
+    }
+  }
+
+  &_big-pink {
+    background-color: #E91FFF;
+    color: #ffffff;
+    min-width: 180px;
+    padding: 12px 24px;
+    line-height: 16px;
+    font-size: 18px;
+    @include for-tablet-portrait-up {
+      padding: 19px 24px;
+    }
+  }
+
+  &_big-blue {
+    background-color: #10BBFF;
+    color: #ffffff;
+    min-width: 180px;
+    padding: 12px 24px;
+    line-height: 16px;
+    font-size: 18px;
+    @include for-tablet-portrait-up {
+      padding: 19px 24px;
+    }
+  }
+
+  &_green-full {
+    background-color: #15B798;
+    border: 1px solid #15B798;
+    color: #ffffff;
+    padding: 9px 18px;
+    line-height: 14px;
+    font-size: 14px;
+    border-radius: 26px;
+    @include for-tablet-portrait-up {
+      padding: 16px 42px;
+      font-size: 16px;
+    }
+  }
+
+  &_green-empty {
+    background-color: #FFFFFF;
+    border: 1px solid #15B798;
+    color: #15B798;
+    padding: 9px 18px;
+    line-height: 14px;
+    font-size: 14px;
+    border-radius: 26px;
+    @include for-tablet-portrait-up {
+      padding: 16px 42px;
+      font-size: 16px;
+    }
+  }
+
+}

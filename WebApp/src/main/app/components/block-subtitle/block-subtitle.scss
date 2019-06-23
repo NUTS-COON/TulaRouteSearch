@@ -1,0 +1,17 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+.block-subtitle {
+  font-family: $font-family;
+  font-size: $font-block-text-size;
+  color: $font-color-white;
+  font-style: italic;
+  margin: 20px 0;
+  @include for-phone-only {
+    font-size: $font-block-text-mobile-size;
+  }
+  @include for-tablet-portrait-up {
+    font-family: $font-family-alternative;
+  }
+
+}

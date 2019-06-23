@@ -1,0 +1,25 @@
+@import "../../../../common/vars";
+@import "../../../../common/mixins";
+
+.abstract-form-field {
+  &__label {
+    font-family: Rubik, sans-serif;
+    font-size: 18px;
+    line-height: 21px;
+    color: #FF815F;
+    padding-left: 32px;
+    padding-bottom: 16px;
+  }
+  &__help-text {
+    font-family: Rubik, sans-serif;
+    font-size: 14px;
+    line-height: 18px;
+    padding-top: 12px;
+    padding-left: 32px;
+    color: #8B8A8A;
+  }
+}
+
+.abstract-form-field + .abstract-form-field {
+  margin-top: 24px;
+}

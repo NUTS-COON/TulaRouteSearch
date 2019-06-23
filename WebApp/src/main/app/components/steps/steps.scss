@@ -1,0 +1,90 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+.steps {
+  &__mobile {
+    display: flex;
+    width: 100%;
+    margin-top: 100px;
+    justify-content: center;
+    @include for-tablet-portrait-up {
+      display: none;
+    }
+  }
+  &__desktop {
+    margin-top: 140px;
+    @include for-phone-only {
+      display: none;
+    }
+  }
+  &__link {
+    float: left;
+    display: block;
+
+    text-align: center;
+    padding: 8px 16px;
+    margin: 0px 16px;
+    text-decoration: none;
+
+    background: #FFE6DF;
+    border-radius: 26px;
+
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 14px;
+    text-align: center;
+    z-index: 2;
+
+    color: #7B7B7B;
+
+    @include for-phone-only {
+      font-size: 18px;
+      color: white;
+      height: 24px;
+      width: 24px;
+      box-sizing: border-box;
+      padding: 0px;
+      line-height: 24px;
+    }
+  }
+
+  &:hover, &__link_active {
+    background: #FF815F;
+    color: #FFFFFF;
+  }
+
+  &__line {
+    position: absolute;
+    left: 14.69%;
+    right: 12.5%;
+    //top: 13.14%;
+    top: 110px;
+    bottom: 94.78%;
+    z-index: 1;
+
+    mix-blend-mode: normal;
+    opacity: 0.5;
+    border-bottom: 2px dashed #FF815F;
+    @include for-tablet-portrait-up {
+      top: 154px;
+      z-index: -1;
+      width: 550px;
+      margin: auto;
+    }
+  }
+
+  &__circle {
+    position: relative;
+    z-index: 2;
+    display: inline;
+  }
+
+  &__label {
+    position: absolute;
+    left: 0;
+    top: 32px;
+  }
+}
+

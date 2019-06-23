@@ -1,0 +1,44 @@
+.abstract-autocomplete {
+  position: relative;
+  width: 100%;
+
+  &__options {
+    width: 100%;
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    top: 45px;
+    overflow-y: auto;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top-color: #e6e6e6;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+    margin-top: -1px;
+    max-height: 200px;
+
+    &-is-big {
+      top: 60px
+    }
+  }
+  &__option {
+    box-sizing: border-box;
+    background-color: #fff;
+    cursor: pointer;
+    display: block;
+    padding: 8px 15px;
+    color: #000000;
+    font-size: 15px;
+  }
+
+  &__option_selected {
+    background: #f4f4f4;
+    cursor: pointer;
+  }
+
+  &__clear-icon {
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,14 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+.title {
+  font-family: $font-family;
+  font-size: 28px;
+  color: $font-color-black;
+  font-weight: 400;
+  text-align: center;
+  @include for-phone-only {
+    font-size: 18px;
+    line-height: 24px;
+  }
+}

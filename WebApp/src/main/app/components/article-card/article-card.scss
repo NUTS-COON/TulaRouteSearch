@@ -1,0 +1,10 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+.article-card {
+  &__title {
+    color: #333333;
+    font-family: Lora;
+  }
+}
+

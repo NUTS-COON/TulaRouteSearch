@@ -1,0 +1,32 @@
+
+.form-wrapper {
+  &__form-label {
+    color: #000000;
+    font-size: 17px;
+  }
+
+  &__form-label_short {
+    height: 43px;
+    line-height: 43px;
+  }
+
+  &__validation-success {
+    border-color: green
+  }
+  &__validation-error {
+    border-color: red;
+  }
+
+  &__form-field:focus {
+    outline: 0;
+  }
+
+  &__error-message_block {
+    margin-bottom:  30px;
+  }
+
+  &__error-message {
+    color: red;
+    margin-bottom:  -21px;
+  }
+}

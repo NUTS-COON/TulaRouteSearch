@@ -1,0 +1,10 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+.popup {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  background: #ffffff;
+  width: 100vw;
+}

@@ -1,0 +1,9 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+.medium-text {
+  font-weight: 500;
+  @include for-tablet-portrait-up {
+    font-weight: 400;
+  }
+}

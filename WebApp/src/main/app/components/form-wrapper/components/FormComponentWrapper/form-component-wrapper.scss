@@ -1,0 +1,36 @@
+.form-component {
+  $background-color: #fff;
+  $focused-color: blue;
+  $disabled-color: #f9f9f9;
+  $right-icon-padding: 35px;
+
+  position: relative;
+  padding: 1px;
+  display: block;
+  width: 100%;
+  line-height: 1.42857143;
+  color: #555;
+  border: 1px solid #e5e5e5;
+  font-size: 15px;
+  box-shadow: none;
+  border-radius: 4px;
+
+  &__wrapper {
+    width: 100%;
+  }
+
+  & > input {
+    padding: 0 15px;
+    box-shadow: none;
+    border: none;
+    outline: none;
+    height: 40px;
+    width: calc(100% - 30px);
+    border-radius: 4px;
+
+    &[disabled] {
+      background-color: $disabled-color;
+      cursor: not-allowed;
+    }
+  }
+ }
