@@ -34,7 +34,7 @@ namespace TulaRouteSearcherAPI.Services
 
         private async Task<IEnumerable<SuggesionAddress>> GetHereSuggestions(string text)
         {
-            var hereSuggestions = await _hereService.GetSuggestions(text);
+            var hereSuggestions = await _hereService.GetSuggestions(text + " Тульская область");
             if (hereSuggestions == null)
                 return Enumerable.Empty<SuggesionAddress>();
 
