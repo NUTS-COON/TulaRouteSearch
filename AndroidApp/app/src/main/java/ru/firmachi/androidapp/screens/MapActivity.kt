@@ -1,9 +1,13 @@
 package ru.firmachi.androidapp.screens
 
 import android.arch.lifecycle.ViewModelProviders
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.graphics.ColorUtils
 import android.support.v7.app.AppCompatActivity
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.Window
 import com.here.android.mpa.common.GeoCoordinate
@@ -20,6 +24,7 @@ import org.jetbrains.anko.toast
 import ru.firmachi.androidapp.R
 import ru.firmachi.androidapp.models.Location
 import ru.firmachi.androidapp.models.Route
+import ru.firmachi.androidapp.models.RoutesResponseModel
 import ru.firmachi.androidapp.models.SuggestionsAddress
 import ru.firmachi.androidapp.viewModels.MapViewModel
 import kotlin.random.Random
@@ -59,14 +64,14 @@ class MapActivity : AppCompatActivity() {
 
     private fun setupViewModel(){
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
-        viewModel.routeLiveData.observe(this, android.arch.lifecycle.Observer { it ->
+        viewModel.routeLiveData.observe(this, android.arch.lifecycle.Observer {
             if(it != null && it.isNotEmpty()){
                 drawRoute(it.first().routes)
-                map_total_time.text = ""
+                map_total_time.text = getRouteInfo(it.first())
             }else{
-                map_total_time.visibility = View.VISIBLE
                 map_total_time.text = "Не удалось получить информацию о маршруте"
             }
+            map_total_time.visibility = View.VISIBLE
             map_progress_bar.visibility = View.GONE
         })
         viewModel.coordinateLiveData.observe(this, android.arch.lifecycle.Observer {
@@ -226,5 +231,78 @@ class MapActivity : AppCompatActivity() {
         ColorUtils.RGBToHSL(r, g, b, arr)
 
         return arr[0]
+    }
+
+    private fun getRouteInfo(routesResponseModel: RoutesResponseModel): SpannableString{
+        val totalTime = getFormattedTime(routesResponseModel.travelTime)
+        val transportChangeCount = getTransportChangeCount(routesResponseModel.routes)
+        val transportChangeText = "Пересадок: $transportChangeCount"
+        if(transportChangeCount == 0){
+            return SpannableString(totalTime)
+        }else{
+
+            val text = "$totalTime\n$transportChangeText"
+            val s = SpannableString(text)
+            val index = text.indexOf(transportChangeText)
+            s.setSpan(ForegroundColorSpan(Color.GRAY),
+                index,
+                transportChangeText.length + index,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+            return s
+        }
+//        val text = if(transportChangeCount == 0){
+//            totalTime
+//        }else{
+//            "$totalTime\n$transportChangeText"
+//        }
+//
+//        val s = SpannableString(text)
+//        s.setSpan(ForegroundColorSpan(Color.GRAY),
+//            text.indexOf(transportChangeText),
+//            transportChangeText.length,
+//            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//
+//        return s
+
+//        if(transportChangeCount == 0){
+//            return totalTime
+//        }
+//
+//
+//
+//        return "$totalTime\nПересадок: $transportChangeCount"
+    }
+
+
+    private fun getFormattedTime(seconds: Int): String{
+        val minutes = if (seconds % 60 == 0){
+            seconds / 60
+        }else{
+            seconds / 60 + 1
+        }
+
+        var res = ""
+
+        if(minutes < 60){
+            res = "Время в пути: ${minutes} мин"
+        }else if(minutes % 60 == 0){
+            res = "Время в пути: ${minutes / 60} ч"
+        }else{
+            res = "Время в пути: ${minutes / 60} ч ${minutes % 60} мин"
+        }
+
+        return  res
+    }
+
+    private fun getTransportChangeCount(routes: List<Route>): Int{
+        var count = 0
+
+        routes.forEach {
+            if(!it.transport.startsWith("Пешком")){
+                count += 1
+            }
+        }
+         return count - 1
     }
 }

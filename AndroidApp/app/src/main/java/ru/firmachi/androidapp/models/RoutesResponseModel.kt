@@ -2,6 +2,7 @@ package ru.firmachi.androidapp.models
 
 data class RoutesResponseModel (
 
+    val travelTime: Int,
     val routes: List<Route>
 )
 
