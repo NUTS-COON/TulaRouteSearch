@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using TulaRouteSearcherAPI.Services;
@@ -8,6 +9,7 @@ namespace TulaRouteSearcherAPI.Controllers
 {
     [Route("api/[controller]")]
     [Produces("application/json")]
+    [EnableCors("AllowAll")]
     public class RouteSearcherController : Controller
     {
         private readonly IHereService _hereService;
