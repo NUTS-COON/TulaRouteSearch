@@ -1,14 +1,9 @@
 package ru.firmachi.androidapp.screens
 
-import android.Manifest
 import android.arch.lifecycle.ViewModelProviders
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.ColorUtils
 import android.support.v7.app.AppCompatActivity
-import android.widget.Toast
 import com.here.android.mpa.common.GeoCoordinate
 import com.here.android.mpa.common.OnEngineInitListener
 import com.here.android.mpa.common.ViewObject
@@ -25,17 +20,12 @@ import ru.firmachi.androidapp.models.Location
 import ru.firmachi.androidapp.models.Route
 import ru.firmachi.androidapp.models.SuggestionsAddress
 import ru.firmachi.androidapp.viewModels.MapViewModel
-import java.util.*
 import kotlin.random.Random
 
 
 class MapActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MapViewModel
-
-    private val REQUEST_PERMISSIONS_CODE = 1
-    private val REQUIRED_SDK_PERMISSIONS =
-        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     private var map: Map? = null
     private var mapFragment: SupportMapFragment? = null
@@ -51,7 +41,8 @@ class MapActivity : AppCompatActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupViewModel()
-        checkPermissions()
+        initialize()
+        //checkPermissions()
     }
 
     override fun onStart() {
@@ -188,48 +179,6 @@ class MapActivity : AppCompatActivity() {
         })
         if (error != RouteManager.Error.NONE) {
             toast("Произошла ошибка при построении маршрута")
-        }
-    }
-
-
-    private fun checkPermissions() {
-        val missingPermissions = ArrayList<String>()
-        for (permission in REQUIRED_SDK_PERMISSIONS) {
-            val result = ContextCompat.checkSelfPermission(this, permission)
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                missingPermissions.add(permission)
-            }
-        }
-        if (missingPermissions.isNotEmpty()) {
-            val permissions = missingPermissions
-                .toTypedArray()
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS_CODE)
-        } else {
-            val grantResults = IntArray(REQUIRED_SDK_PERMISSIONS.size)
-            Arrays.fill(grantResults, PackageManager.PERMISSION_GRANTED)
-            onRequestPermissionsResult(
-                REQUEST_PERMISSIONS_CODE, REQUIRED_SDK_PERMISSIONS,
-                grantResults
-            )
-        }
-    }
-
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            REQUEST_PERMISSIONS_CODE -> {
-                for (index in permissions.indices.reversed()) {
-                    if (grantResults[index] != PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(
-                            this, "Required permission '" + permissions[index]
-                                    + "' not granted, exiting", Toast.LENGTH_LONG
-                        ).show()
-                        finish()
-                        return
-                    }
-                }
-                initialize()
-            }
         }
     }
 
