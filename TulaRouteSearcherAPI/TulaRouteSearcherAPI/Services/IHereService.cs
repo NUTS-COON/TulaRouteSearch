@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Threading.Tasks;
 using TulaRouteSearcherAPI.Models;
 
@@ -6,6 +6,8 @@ namespace TulaRouteSearcherAPI.Services
 {
     public interface IHereService
     {
-        Task<IEnumerable<HereSuggestion>> GetSuggestions(string text);
+        Task<HereSuggestions> GetSuggestions(string text);
+        Task<HereRouteResponse> GetRoutes(DateTime time, Coordinate from, Coordinate to, string mode = "publicTransport");
+        Task<Coordinate> GetLocation(string locationId);
     }
 }

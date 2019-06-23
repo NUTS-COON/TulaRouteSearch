@@ -2,8 +2,12 @@
 {
     public class AddressInfo
     {
-        public string Town { get; set; }
-        public string Address { get; set; }
         public Coordinate Coordinate { get; set; }
+        public string HereLocationId { get; set; }
+    }
+
+    public class SuggesionAddress : AddressInfo
+    {
+        public string Address { get; set; }
     }
 }
