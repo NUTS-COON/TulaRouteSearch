@@ -9,13 +9,11 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.ColorUtils
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
-import com.here.android.mpa.common.GeoBoundingBox
 import com.here.android.mpa.common.GeoCoordinate
 import com.here.android.mpa.common.OnEngineInitListener
+import com.here.android.mpa.common.ViewObject
+import com.here.android.mpa.mapping.*
 import com.here.android.mpa.mapping.Map
-import com.here.android.mpa.mapping.MapMarker
-import com.here.android.mpa.mapping.MapRoute
-import com.here.android.mpa.mapping.SupportMapFragment
 import com.here.android.mpa.routing.RouteManager
 import com.here.android.mpa.routing.RouteOptions
 import com.here.android.mpa.routing.RoutePlan
@@ -29,7 +27,6 @@ import ru.firmachi.androidapp.models.SuggestionsAddress
 import ru.firmachi.androidapp.viewModels.MapViewModel
 import java.util.*
 import kotlin.random.Random
-
 
 
 class MapActivity : AppCompatActivity() {
@@ -70,9 +67,7 @@ class MapActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
         viewModel.routeLiveData.observe(this, android.arch.lifecycle.Observer { it ->
             if(it != null){
-                it.forEach {
-                    drawRoute(it.routes)
-                }
+                drawRoute(it.first().routes)
             }else{
                 map_total_time.text = "Не удалось получить информацию о маршруте"
             }
@@ -100,8 +95,9 @@ class MapActivity : AppCompatActivity() {
         mapFragment = getSupportMapFragment()
         mapFragment!!.init { error ->
             if (error == OnEngineInitListener.Error.NONE) {
+                mapFragment!!.mapGesture.addOnGestureListener(gestureListener)
                 map = mapFragment!!.map
-                map!!.zoomLevel = 16.0
+                map!!.zoomLevel = 11.0
             } else {
                 toast("Карты Here В С Ё. Помянем")
                 finish()
@@ -109,9 +105,30 @@ class MapActivity : AppCompatActivity() {
         }
     }
 
+    private val gestureListener = object: MapGesture.OnGestureListener.OnGestureListenerAdapter(){
+        override fun onMapObjectsSelected(p0: MutableList<ViewObject>?): Boolean {
+            for (viewObj in p0!!) {
+                if (viewObj.baseType == ViewObject.Type.USER_OBJECT) {
+                    if ((viewObj as MapObject).type == MapObject.Type.MARKER) {
+                        val `object` = viewObj as MapObject
+                        val mapMarker = `object` as MapMarker
+                        if(mapMarker.isInfoBubbleVisible){
+                            mapMarker.hideInfoBubble()
+                        }else{
+                            mapMarker.showInfoBubble()
+                        }
+                    }
+
+                }
+
+            }
+            return false
+            }
+        }
+
 
     private fun drawRoute(route: List<Route>){
-        route.forEach{
+        route.filter { it.points.size > 1 }.forEach{
             val color = getARGBAsNull(
                 254,
                 Random.nextInt(1, 255),
@@ -127,14 +144,23 @@ class MapActivity : AppCompatActivity() {
         val routePlan = RoutePlan()
 
         val routeOptions = RouteOptions()
-        routeOptions.transportMode = RouteOptions.TransportMode.CAR
+        if(transportRoute.transport.startsWith("Пешком")){
+            routeOptions.transportMode = RouteOptions.TransportMode.PEDESTRIAN
+        }else{
+            routeOptions.transportMode = RouteOptions.TransportMode.CAR
+        }
+
         routeOptions.routeType = RouteOptions.Type.FASTEST
         routePlan.routeOptions = routeOptions
+        val firstPoint = transportRoute.points.first()
+        val lastPoint = transportRoute.points.last()
+        routePlan.addWaypoint(GeoCoordinate(firstPoint.coordinate.latitude, firstPoint.coordinate.longitude))
+        routePlan.addWaypoint(GeoCoordinate(lastPoint.coordinate.latitude, lastPoint.coordinate.longitude))
 
-        transportRoute.points.forEach {
-            setBoundingBoxCoordinates(it.coordinate)
-            routePlan.addWaypoint(GeoCoordinate(it.coordinate.longitude, it.coordinate.latitude))
-        }
+//        transportRoute.points.forEach {
+//            setBoundingBoxCoordinates(it.coordinate)
+//            routePlan.addWaypoint(GeoCoordinate(it.coordinate.latitude, it.coordinate.longitude))
+//        }
 
         val error = routeManager.calculateRoute(routePlan, object : RouteManager.Listener {
             override fun onCalculateRouteFinished(errorCode: RouteManager.Error, result: List<RouteResult>) {
@@ -146,16 +172,14 @@ class MapActivity : AppCompatActivity() {
 
                     val firstPoint = transportRoute.points[0].coordinate
                     val point = MapMarker(RGBToHUE(color))
+                    point.title = transportRoute.transport
                     point.coordinate = GeoCoordinate(firstPoint.latitude, firstPoint.longitude)
                     map!!.addMapObject(point)
+                    //map!!.zoomTo(result[0].route.boundingBox, Map.Animation.NONE, Map.MOVE_PRESERVE_ORIENTATION)
 
                 } else {
                     map_total_time.text = "Карты Here В С Ё. Помянем"
                 }
-                map!!.zoomTo(
-                    GeoBoundingBox(GeoCoordinate(top, left), GeoCoordinate(bottom, right)),
-                    Map.Animation.NONE,
-                    Map.MOVE_PRESERVE_ORIENTATION)
             }
 
             override fun onProgress(percentage: Int) {
