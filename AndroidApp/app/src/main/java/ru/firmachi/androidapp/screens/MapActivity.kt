@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.ColorUtils
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.here.android.mpa.common.GeoBoundingBox
@@ -28,6 +29,8 @@ import ru.firmachi.androidapp.models.SuggestionsAddress
 import ru.firmachi.androidapp.viewModels.MapViewModel
 import java.util.*
 import kotlin.random.Random
+
+
 
 class MapActivity : AppCompatActivity() {
 
@@ -156,7 +159,7 @@ class MapActivity : AppCompatActivity() {
             }
 
             override fun onProgress(percentage: Int) {
-                map_total_time.text = "Строим маршрут. Готово на ${percentage}%"
+                //map_total_time.text = "Строим маршрут. Готово на ${percentage}%"
             }
         })
         if (error != RouteManager.Error.NONE) {
@@ -233,20 +236,14 @@ class MapActivity : AppCompatActivity() {
 
 
     private fun RGBToHUE(rgb: Int): Float{
-        var r = rgb and (255 shl 16)
-        var g = rgb and (255 shl 8)
-        var b = rgb and 255
+        var r = (rgb shr 16) and 0xFF
+        var g = (rgb shr 8) and 0xFF
+        var b = rgb and 0xFF
 
-        val R = r.toFloat() / 255.0
-        val G = g.toFloat() / 255.0
-        val B = b.toFloat() / 255.0
+        val arr = floatArrayOf(0f,0f,0f)
 
-        if(R > G && R > B){
-            return ((G - B) / (R - Math.min(G, B))).toFloat()
-        }else if(G > R && G > B){
-            return (2.0 + ((B - R) / G - Math.min(R, B))).toFloat()
-        }else{
-            return (4.0 + ((R - G) / (B - Math.min(R, G)))).toFloat()
-        }
+        ColorUtils.RGBToHSL(r, g, b, arr)
+
+        return arr[0]
     }
 }

@@ -75,6 +75,8 @@ class MapViewModel : ViewModel() {
                         .subscribe {
                             if(it.isSuccessful){
                                 routeLiveData.value = it.body()
+                            }else{
+                                routeLiveData.value = null
                             }
                         }
                 }
@@ -113,17 +115,6 @@ class MapViewModel : ViewModel() {
 //                }
 //            }
 
-//        apiService.getRoutes(RouteRequestModel(addressFrom, addressTo))
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .doOnError {
-//                routeLiveData.value = null
-//            }
-//            .subscribe {
-//                if(it.isSuccessful){
-//                    routeLiveData.value = it.body()
-//                }
-//            }
     }
 
     fun getCenterLocation(l1: Location, l2: Location): Location{
