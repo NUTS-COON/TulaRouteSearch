@@ -1,7 +1,6 @@
 package ru.firmachi.androidapp.screens
 
 import android.content.Context
-import android.widget.TextView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +27,7 @@ class AutoCompleteAdapter(private val mContext: Context):BaseAdapter(), Filterab
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val filterResults = FilterResults()
+
                 if (constraint != null && constraint.isNotEmpty()) {
                     val address = findAddress(constraint.toString())
                     filterResults.values = address
@@ -36,6 +36,7 @@ class AutoCompleteAdapter(private val mContext: Context):BaseAdapter(), Filterab
                     filterResults.values = emptyList<String>()
                     filterResults.count = 0
                 }
+
                 return filterResults
             }
 
@@ -64,6 +65,7 @@ class AutoCompleteAdapter(private val mContext: Context):BaseAdapter(), Filterab
 
     override fun getView(position:Int, convertView: View?, parent:ViewGroup):View {
         var v = convertView
+
         if (v == null)
         {
             val inflater = LayoutInflater.from(mContext)

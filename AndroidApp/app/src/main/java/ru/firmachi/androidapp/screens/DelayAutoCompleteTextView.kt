@@ -1,12 +1,11 @@
 package ru.firmachi.androidapp.screens
 
 import android.content.Context
-import android.os.Handler
-import android.os.Message
 import android.support.v7.widget.AppCompatAutoCompleteTextView
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ProgressBar
+import kotlinx.coroutines.*
 
 
 class DelayAutoCompleteTextView(context: Context, attrs: AttributeSet) : AppCompatAutoCompleteTextView(context, attrs) {
@@ -21,11 +20,7 @@ class DelayAutoCompleteTextView(context: Context, attrs: AttributeSet) : AppComp
     private var mAutoCompleteDelay = DEFAULT_AUTOCOMPLETE_DELAY
     private var mLoadingIndicator: ProgressBar? = null
 
-    private val mHandler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            super@DelayAutoCompleteTextView.performFiltering(msg.obj as CharSequence, msg.arg1)
-        }
-    }
+    private var job: Job? = null
 
     fun setLoadingIndicator(progressBar: ProgressBar) {
         mLoadingIndicator = progressBar
@@ -39,9 +34,13 @@ class DelayAutoCompleteTextView(context: Context, attrs: AttributeSet) : AppComp
         if (mLoadingIndicator != null) {
             mLoadingIndicator!!.visibility = View.VISIBLE
         }
+
         if(text.isNotEmpty()){
-            mHandler.removeMessages(MESSAGE_TEXT_CHANGED)
-            mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, text), mAutoCompleteDelay)
+            job?.cancel()
+            job = GlobalScope.launch(Dispatchers.IO) {
+                delay(mAutoCompleteDelay)
+                super.performFiltering(text, MESSAGE_TEXT_CHANGED)
+            }
         }
     }
 
