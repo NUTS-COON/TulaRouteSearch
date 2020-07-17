@@ -30,7 +30,7 @@
     "file-loader": "^1.1.6",
     "html2canvas": "^1.0.0-alpha.12",
     "jspdf": "^1.5.3",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "mixpanel-browser": "^2.18.0",
     "node-sass": "^4.7.2",
     "pdfjs-dist": "^2.0.943",
