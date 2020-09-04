@@ -32,7 +32,7 @@
     "jspdf": "^1.5.3",
     "lodash": "^4.17.11",
     "mixpanel-browser": "^2.18.0",
-    "node-sass": "^4.7.2",
+    "node-sass": "^4.13.1",
     "pdfjs-dist": "^2.0.943",
     "prop-types": "^15.6.0",
     "react": "^16.3.1",
