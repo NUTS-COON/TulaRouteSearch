@@ -50,7 +50,7 @@
     "style-loader": "^0.20.1",
     "webpack-node-externals": "^1.6.0",
     "@manaflair/redux-batch": "^0.1.0",
-    "axios": "^0.16.2",
+    "axios": "^0.21.1",
     "babel-polyfill": "^6.26.0"
   },
   "devDependencies": {
